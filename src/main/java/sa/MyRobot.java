@@ -8,13 +8,12 @@ public class MyRobot extends AdvancedRobot {
     private MyOdometer myOdometer = new MyOdometer("MyOdometer", this);
 
     public void run() {
-        addCustomEvent(odometer);
-        addCustomEvent(myOdometer);
+        addCustomEvent(this.odometer);
+        addCustomEvent(this.myOdometer);
         this.myOdometer.start_race();
         ahead(20);
         back(20);
-        double result = this.myOdometer.stop_race();
-        System.out.println("Distance travelled -> " + String.format("%.2f", result));
+        System.out.println("Distance travelled -> " + String.format("%.2f", this.myOdometer.stop_race()));
     }
 
     public void onCustomEvent(CustomEvent ev) {

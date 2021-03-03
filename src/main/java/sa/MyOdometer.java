@@ -29,8 +29,8 @@ public class MyOdometer extends Condition {
     }
 
     public boolean test() {
-        this.r.setDebugProperty("is_racing", String.valueOf(is_racing));
-        this.r.setDebugProperty("finished", String.valueOf(finished));
+        this.r.setDebugProperty("is_racing", String.valueOf(this.is_racing));
+        this.r.setDebugProperty("finished", String.valueOf(this.finished));
         this.r.setDebugProperty("distance_travelled", String.valueOf(String.format("%.2f", this.distance_travelled)));
         return r.getTime() != 0;
     }
@@ -39,8 +39,8 @@ public class MyOdometer extends Condition {
         return Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2));
     }
 
-    public void calculateDistanceTravelled(){
-        if(is_racing){
+    public void calculateDistanceTravelled() {
+        if (is_racing) {
             this.x = r.getX();
             this.y = r.getY();
             this.distance_travelled += euclideanDistance(this.x, this.oldX, this.y, this.oldY);
