@@ -13,7 +13,8 @@ public class MyRobot extends AdvancedRobot {
         this.myOdometer.start_race();
         ahead(20);
         back(20);
-        this.myOdometer.stop_race();
+        double result = this.myOdometer.stop_race();
+        System.out.println("Distance travelled -> " + String.format("%.2f", result));
     }
 
     public void onCustomEvent(CustomEvent ev) {
