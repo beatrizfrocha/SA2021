@@ -10,19 +10,23 @@ public class MyRobot extends AdvancedRobot {
     public void run() {
         addCustomEvent(odometer);
         addCustomEvent(myOdometer);
-        while(true){
-            ahead(100);
-            turnGunRight(360);
-            back(100);
-            turnGunRight(360);
-        }
+        this.myOdometer.start_race();
+        ahead(20);
+        back(20);
+        this.myOdometer.stop_race();
     }
 
     public void onCustomEvent(CustomEvent ev) {
         Condition cd = ev.getCondition();
-        if (cd.getName().equals("isRacing"))
-            this.odometer.getRaceDistance();
-        if (cd.getName().equals("MyOdometer"))
+        if (cd.getName().equals("MyOdometer")) {
             this.myOdometer.calculateDistanceTravelled();
+        }
+        if (cd.getName().equals("isRacing")) {
+            this.odometer.getRaceDistance();
+        }
+    }
+
+    public void onStatus(StatusEvent event) {
+        this.myOdometer.calculateDistanceTravelled();
     }
 }
