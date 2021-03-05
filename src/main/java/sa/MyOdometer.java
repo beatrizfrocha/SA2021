@@ -3,11 +3,12 @@ package sa;
 import robocode.AdvancedRobot;
 import robocode.Condition;
 
+import static sa.Utils.distanciaEntrePontos;
+
 public class MyOdometer extends Condition {
     private boolean is_racing;
     private boolean finished;
     private double distance_travelled = 0;
-    private String name;
     private AdvancedRobot r;
     private double oldX;
     private double oldY;
@@ -35,15 +36,11 @@ public class MyOdometer extends Condition {
         return r.getTime() != 0;
     }
 
-    public double euclideanDistance(double x1, double x2, double y1, double y2) {
-        return Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2));
-    }
-
     public void calculateDistanceTravelled() {
         if (is_racing) {
             this.x = r.getX();
             this.y = r.getY();
-            this.distance_travelled += euclideanDistance(this.x, this.oldX, this.y, this.oldY);
+            this.distance_travelled += distanciaEntrePontos(this.x, this.oldX, this.y, this.oldY);
             this.oldX = this.x;
             this.oldY = this.y;
         }
