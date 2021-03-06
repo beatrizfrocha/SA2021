@@ -10,17 +10,21 @@ import standardOdometer.Odometer;
 
 public class SmartRobot extends AdvancedRobot {
 
-    // Ver se vale a pena ter estas 2 vars
     private boolean is_racing = false;
     private boolean finished = false;
+    private boolean scanned = false;
 
     private Odometer odometer = new Odometer("isRacing", this);
     private MyOdometer roundOdometer = new MyOdometer("MyOdometer", this);
-    private boolean robotScanned = false;
 
     public void run() {
         addCustomEvent(this.odometer);
         addCustomEvent(this.roundOdometer);
+
+        // Espera antes de se mover para posição inicial
+	    for (int i = 0; i < 100 ; i++){
+		    doNothing();
+	    }
 
         // Ir para o canto inferior esquerdo
         move(18,18);
@@ -32,9 +36,9 @@ public class SmartRobot extends AdvancedRobot {
         turnRight(360-getRadarHeading());
 
         int j = 0;
-        while(j<3) { // 3 robots => 3 scans
-            if(!robotScanned) {
-                // Scanning to the right side
+        while(j<3) { // Scan 3 vezes pois são 3 robôs
+            if(!scanned) {
+                // Scanning no sentido dos ponteiros do relógio
                 turnRadarRight(45);
                 j++;
             }
@@ -42,12 +46,12 @@ public class SmartRobot extends AdvancedRobot {
 
         move(18,18);
 
-        System.out.println("Distance travelled -> " + String.format("%.2f", this.roundOdometer.stop_race()));
+        System.out.println("Distância percorrida = " + String.format("%.2f", this.roundOdometer.stop_race()));
     }
 
     public void onStatus(StatusEvent event){
         if(event == null || event.getStatus() == null){
-            System.out.println("Null Event or Status");
+            System.out.println("Evento Inválido");
             return ;
         }
         if(roundOdometer != null){
@@ -91,38 +95,38 @@ public class SmartRobot extends AdvancedRobot {
     }
 
     public void onScannedRobot(ScannedRobotEvent e) {
-        if(is_racing && !robotScanned){
-            robotScanned = true;
+        if(is_racing && !scanned){
+            scanned = true;
 
-            // Place the radar normally
+            // Posicionar o radar corretamente
             turnRadarLeft(45);
 
-            // Angle to the next robot
+            // Ângulo entre a direção do SmartRobot e do robô alvo
             double degreesToTurn = e.getBearing();
 
-            // Turn to the next robot
+            // Virar SmartRobot de modo a apontar para robô alvo
             turnRight(degreesToTurn);
 
-            // Go ahead and stop just before
+            // Mover até robô e parar antes de bater
             ahead(e.getDistance()-50);
 
-            // Go around the robot
+            // Contorna robô
             goAroundRobot();
 
-            robotScanned = false;
+            scanned = false;
         }
     }
 
     public void goAroundRobot(){
         turnLeft(90);
 
-        // Start turns
+        // Começar os turnos
         for(int i=0;i<48;i++){
             ahead(2.5);
             turnRight(2.8125);
         }
 
-        // Last turn more safely (for the radar catch the next robot)
+        // Rodar de modo a que o radar consiga identificar o próximo robô
         ahead(10);
         turnRight(15);
     }
