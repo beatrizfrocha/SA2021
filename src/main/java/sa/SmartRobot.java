@@ -11,11 +11,10 @@ import standardOdometer.Odometer;
 public class SmartRobot extends AdvancedRobot {
 
     private boolean is_racing = false;
-    private boolean finished = false;
     private boolean scanned = false;
-
-    private Odometer odometer = new Odometer("isRacing", this);
-    private MyOdometer roundOdometer = new MyOdometer("MyOdometer", this);
+    private final Odometer odometer = new Odometer("isRacing", this);
+    private final MyOdometer roundOdometer = new MyOdometer("MyOdometer", this);
+    private int robots_scanned = 0;
 
     public void run() {
         addCustomEvent(this.odometer);
@@ -24,10 +23,11 @@ public class SmartRobot extends AdvancedRobot {
         // Ir para o canto inferior esquerdo
         move(18,18);
 
+        // Começa a corrida
         this.roundOdometer.start_race();
         is_racing = true;
 
-        // Espera antes de se mover para posição inicial
+        // Espera para os Rock Quads se posicionarem corretamente
         for (int i = 0; i < 160 ; i++){
             doNothing();
         }
@@ -35,39 +35,14 @@ public class SmartRobot extends AdvancedRobot {
         // Aponta o carro para cima
         turnRight(360-getHeading());
 
-        int j = 0;
-        while(j<3) { // Scan 3 vezes pois são 3 robôs
-            if(!scanned) {
-                // Scanning no sentido dos ponteiros do relógio
-                turnRadarRight(45);
-                j++;
-            }
-        }
+        // Scan 3 vezes de obstáculos diferentes
+        while(robots_scanned<3)
+            if(!scanned) turnRadarRight(45);
 
+        // Voltar para o canto inferior esquerdo
         move(18,18);
 
         System.out.println("Distância percorrida = " + String.format("%.2f", this.roundOdometer.stop_race()));
-    }
-
-    public void onStatus(StatusEvent event){
-        if(event == null || event.getStatus() == null){
-            System.out.println("Evento Inválido");
-            return ;
-        }
-        if(roundOdometer != null){
-            roundOdometer.calculateDistanceTravelled();
-        }
-
-    }
-
-    public void onCustomEvent(CustomEvent ev) {
-        Condition cd = ev.getCondition();
-        if (cd.getName().equals("MyOdometer")) {
-            this.roundOdometer.calculateDistanceTravelled();
-        }
-        if (cd.getName().equals("isRacing")) {
-            this.odometer.getRaceDistance();
-        }
     }
 
     public void move(double xf, double yf){
@@ -84,16 +59,6 @@ public class SmartRobot extends AdvancedRobot {
         ahead(distance);
     }
 
-    // Se colidir com outro robot enquanto está a ir para a posição inicial, recua e tenta de novo.
-    public void onHitRobot(HitRobotEvent e){
-        if(!is_racing){
-            back(50);
-            turnLeft(45);
-            ahead(50);
-            move(18,18);
-        }
-    }
-
     public void onScannedRobot(ScannedRobotEvent e) {
         if(is_racing && !scanned){
             scanned = true;
@@ -101,32 +66,57 @@ public class SmartRobot extends AdvancedRobot {
             // Posicionar o radar corretamente
             turnRadarLeft(45);
 
-            // Ângulo entre a direção do SmartRobot e do robô alvo
-            double degreesToTurn = e.getBearing();
+            // Virar robot para apontar para o robot alvo
+            turnRight(e.getBearing());
 
-            // Virar SmartRobot de modo a apontar para robô alvo
-            turnRight(degreesToTurn);
-
-            // Mover até robô e parar antes de bater
+            // Mover até robot e parar antes de bater
             ahead(e.getDistance()-50);
 
-            // Contorna robô
-            goAroundRobot();
+            // Contorna robot
+            contornaRobot();
 
             scanned = false;
+            robots_scanned++;
         }
     }
 
-    public void goAroundRobot(){
+    public void contornaRobot(){
         turnLeft(90);
 
-        // Começar os turnos
-        for(int i=0;i<40;i++){
-                ahead(2.99956);
-                turnRight(3.396);
+        for(int i=0;i<53;i++){
+            ahead(3);
+            turnRight(3.375);
         }
 
-        ahead(10);
+        turnLeft(45);
+        turnRadarLeft(45);
+    }
 
+    // Se colidir com outro robot enquanto está a ir para a posição inicial, recua e tenta de novo.
+    public void onHitRobot(HitRobotEvent e){
+        if(!is_racing){
+            back(50);
+            turnRight(45);
+            ahead(60);
+            move(18,18);
+        }
+    }
+
+    public void onStatus(StatusEvent event){
+        if(event == null || event.getStatus() == null){
+            System.out.println("Evento Inválido");
+            return ;
+        }
+        roundOdometer.calculateDistanceTravelled();
+    }
+
+    public void onCustomEvent(CustomEvent ev) {
+        Condition cd = ev.getCondition();
+        if (cd.getName().equals("MyOdometer")) {
+            this.roundOdometer.calculateDistanceTravelled();
+        }
+        if (cd.getName().equals("isRacing")) {
+            this.odometer.getRaceDistance();
+        }
     }
 }
