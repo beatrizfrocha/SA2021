@@ -21,19 +21,19 @@ public class SmartRobot extends AdvancedRobot {
         addCustomEvent(this.odometer);
         addCustomEvent(this.roundOdometer);
 
-        // Espera antes de se mover para posição inicial
-	    for (int i = 0; i < 100 ; i++){
-		    doNothing();
-	    }
-
         // Ir para o canto inferior esquerdo
         move(18,18);
 
         this.roundOdometer.start_race();
         is_racing = true;
 
+        // Espera antes de se mover para posição inicial
+        for (int i = 0; i < 160 ; i++){
+            doNothing();
+        }
+
         // Aponta o carro para cima
-        turnRight(360-getRadarHeading());
+        turnRight(360-getHeading());
 
         int j = 0;
         while(j<3) { // Scan 3 vezes pois são 3 robôs
@@ -88,7 +88,7 @@ public class SmartRobot extends AdvancedRobot {
     public void onHitRobot(HitRobotEvent e){
         if(!is_racing){
             back(50);
-            turnRight(45);
+            turnLeft(45);
             ahead(50);
             move(18,18);
         }
@@ -121,13 +121,12 @@ public class SmartRobot extends AdvancedRobot {
         turnLeft(90);
 
         // Começar os turnos
-        for(int i=0;i<48;i++){
-            ahead(2.5);
-            turnRight(2.8125);
+        for(int i=0;i<40;i++){
+                ahead(2.99956);
+                turnRight(3.396);
         }
 
-        // Rodar de modo a que o radar consiga identificar o próximo robô
         ahead(10);
-        turnRight(15);
+
     }
 }
