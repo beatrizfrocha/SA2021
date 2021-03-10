@@ -5,32 +5,33 @@ import robocode.*;
 import static robocode.util.Utils.normalRelativeAngleDegrees;
 import static sa.Utils.angleBetween;
 import static sa.Utils.distanciaEntrePontos;
-
 import standardOdometer.Odometer;
 
 public class SmartRobot extends AdvancedRobot {
 
     private boolean is_racing = false;
     private boolean scanned = false;
-    private final Odometer odometer = new Odometer("isRacing", this);
+
     private final MyOdometer roundOdometer = new MyOdometer("MyOdometer", this);
+    private Odometer odometer = new Odometer("IsRacing", this);
     private int robots_scanned = 0;
 
     public void run() {
-        addCustomEvent(this.odometer);
         addCustomEvent(this.roundOdometer);
 
         // Ir para o canto inferior esquerdo
         move(18,18);
 
-        // Começa a corrida
-        this.roundOdometer.start_race();
-        is_racing = true;
-
         // Espera para os Rock Quads se posicionarem corretamente
         for (int i = 0; i < 160 ; i++){
             doNothing();
         }
+
+        addCustomEvent(this.odometer);
+
+        // Começa a corrida
+        this.roundOdometer.start_race();
+        is_racing = true;
 
         // Aponta o carro para cima
         turnRight(360-getHeading());
@@ -42,7 +43,7 @@ public class SmartRobot extends AdvancedRobot {
         // Voltar para o canto inferior esquerdo
         move(18,18);
 
-        System.out.println("Distância percorrida = " + String.format("%.2f", this.roundOdometer.stop_race()));
+        System.out.println("Distance travelled -> " + String.format("%.2f", this.roundOdometer.stop_race()));
     }
 
     public void move(double xf, double yf){
@@ -88,7 +89,7 @@ public class SmartRobot extends AdvancedRobot {
             turnRight(3.375);
         }
 
-        turnLeft(45);
+        //turnLeft(45);
         turnRadarLeft(45);
     }
 
@@ -115,7 +116,7 @@ public class SmartRobot extends AdvancedRobot {
         if (cd.getName().equals("MyOdometer")) {
             this.roundOdometer.calculateDistanceTravelled();
         }
-        if (cd.getName().equals("isRacing")) {
+        if (cd.getName().equals("IsRacing")){
             this.odometer.getRaceDistance();
         }
     }
