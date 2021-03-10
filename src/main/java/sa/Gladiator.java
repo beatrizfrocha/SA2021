@@ -4,6 +4,10 @@ import robocode.*;
 
 import java.io.IOException;
 
+import static robocode.Rules.MAX_BULLET_POWER;
+import static robocode.util.Utils.normalRelativeAngleDegrees;
+import static sa.Utils.normalizeBearing;
+
 public class Gladiator extends TeamRobot implements Droid {
 
     private Rival rival;
@@ -11,6 +15,7 @@ public class Gladiator extends TeamRobot implements Droid {
     private boolean boss_dead = false;
     private boolean saviour_dead = false;
     private boolean battlefield_mode = false;
+    private int direction;
 
     public void run() {
         this.informPosition();
@@ -32,6 +37,30 @@ public class Gladiator extends TeamRobot implements Droid {
 
     private void shoot_rival(Rival rival) {
 
+        double posX = rival.getX() - this.getX();
+        double posY = rival.getY() - this.getY();
+
+        double angle = Math.toDegrees(Math.atan2(posX, posY));
+        double gun_angle = normalRelativeAngleDegrees(angle - this.getGunHeading());
+
+        // When the robot hits an obstacle, it changes its direction
+        if(this.getVelocity() == 0){
+            this.direction *= -1;
+        }
+
+        this.setTurnRight(normalizeBearing(rival.getBearing() + 90 - (15 * this.direction)));
+
+        if(this.getTime() % 5 == 0){
+            this.direction *= -1;
+            this.setAhead(4000 * this.direction);
+        }
+
+        this.turnGunRight(gun_angle);
+
+        if(this.getGunHeat() == 0 && Math.abs(this.getGunTurnRemaining()) < 30){
+            this.fire(MAX_BULLET_POWER);
+        }
+
     }
 
     public void onHitRobot(HitRobotEvent evnt) {
@@ -39,7 +68,7 @@ public class Gladiator extends TeamRobot implements Droid {
             this.ahead(100);
         } else {
             this.turnRight(evnt.getBearing());
-            this.fire(3);
+            this.fire(MAX_BULLET_POWER);
             this.ahead(40);
         }
     }

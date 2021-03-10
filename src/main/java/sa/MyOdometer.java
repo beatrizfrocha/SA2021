@@ -3,7 +3,7 @@ package sa;
 import robocode.AdvancedRobot;
 import robocode.Condition;
 
-import static sa.Utils.distanciaEntrePontos;
+import static sa.Utils.euclideanDistance;
 
 public class MyOdometer extends Condition {
     private boolean is_racing;
@@ -37,9 +37,6 @@ public class MyOdometer extends Condition {
         return r.getTime() != 0;
     }
 
-    public double euclideanDistance(double x1, double x2, double y1, double y2) {
-        return Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2));
-    }
     public void calculateDistanceTravelled() {
         if (is_racing) {
             this.x = r.getX();
