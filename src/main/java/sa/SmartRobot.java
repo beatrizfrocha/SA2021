@@ -7,6 +7,8 @@ import static sa.Utils.angleBetween;
 import static sa.Utils.distanciaEntrePontos;
 import standardOdometer.Odometer;
 
+import java.awt.*;
+
 public class SmartRobot extends AdvancedRobot {
 
     private boolean is_racing = false;
@@ -17,7 +19,17 @@ public class SmartRobot extends AdvancedRobot {
     private int robots_scanned = 0;
 
     public void run() {
-        addCustomEvent(this.roundOdometer);
+        // Turn to a wall
+        this.turnLeft(this.getHeading() % 90);
+        // Battlefield's width
+        this.ahead(800);
+        this.turnLeft(90);
+        while (true){
+            this.ahead(800);
+            this.turnLeft(90);
+        }
+
+       /* addCustomEvent(this.roundOdometer);
 
         // Ir para o canto inferior esquerdo
         move(18,18);
@@ -43,7 +55,7 @@ public class SmartRobot extends AdvancedRobot {
         // Voltar para o canto inferior esquerdo
         move(18,18);
 
-        System.out.println("Distance travelled -> " + String.format("%.2f", this.roundOdometer.stop_race()));
+        System.out.println("Distance travelled -> " + String.format("%.2f", this.roundOdometer.stop_race()));*/
     }
 
     public void move(double xf, double yf){
