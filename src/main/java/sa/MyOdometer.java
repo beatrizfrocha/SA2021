@@ -41,7 +41,7 @@ public class MyOdometer extends Condition {
         if (is_racing) {
             this.x = r.getX();
             this.y = r.getY();
-            this.distance_travelled += euclideanDistance(this.x, this.oldX, this.y, this.oldY);
+            this.distance_travelled += euclideanDistance(this.x, this.y, this.oldX, this.oldY);
             this.oldX = this.x;
             this.oldY = this.y;
         }

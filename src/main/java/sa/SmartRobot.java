@@ -19,28 +19,28 @@ public class SmartRobot extends AdvancedRobot {
     public void run() {
         this.addCustomEvent(this.myOdometer);
 
-        // Ir para o canto inferior esquerdo
+        // Go to the starting position
         this.move(18,18);
 
-        // Espera para os Rock Quads se posicionarem corretamente
+        // Wait until the 3 rockquads are in their correct positions
         for (int i = 0; i < 160 ; i++){
             this.doNothing();
         }
 
         this.addCustomEvent(this.odometer);
 
-        // Começa a corrida
+        // Start the race
         this.myOdometer.start_race();
         this.is_racing = true;
 
-        // Aponta o carro para cima
+        // Point to north
         this.turnRight(360-this.getHeading());
 
-        // Scan 3 vezes de obstáculos diferentes
+        // Scan 3 times 3 different obstacles
         while(this.robots_scanned<3)
             if(!this.scanned) this.turnRadarRight(45);
 
-        // Voltar para o canto inferior esquerdo
+        // Go back to the starting position
         this.move(18,18);
 
         System.out.println("Distance travelled -> " + String.format("%.2f", this.myOdometer.stop_race()));
@@ -65,24 +65,24 @@ public class SmartRobot extends AdvancedRobot {
         if(this.is_racing && !this.scanned){
             this.scanned = true;
 
-            // Posicionar o radar corretamente
+            // Place the radar in its normal direction
             this.turnRadarLeft(45);
 
-            // Virar robot para apontar para o robot alvo
+            // Turn robot and point it to the target
             this.turnRight(e.getBearing());
 
-            // Mover até robot e parar antes de bater
+            // Move in the rockquad's direction and stop before hitting it
             this.ahead(e.getDistance()-50);
 
-            // Contorna robot
-            this.contornaRobot();
+            // Outline the robot
+            this.bypass_obstacle();
 
             this.scanned = false;
             this.robots_scanned++;
         }
     }
 
-    public void contornaRobot(){
+    public void bypass_obstacle(){
         this.turnLeft(90);
 
         for(int i=0;i<53;i++){
@@ -90,11 +90,10 @@ public class SmartRobot extends AdvancedRobot {
             this.turnRight(3.375);
         }
 
-        //turnLeft(45);
         this.turnRadarLeft(45);
     }
 
-    // Se colidir com outro robot enquanto está a ir para a posição inicial, recua e tenta de novo.
+    // If it collides with another robot while going to the starting position, it goes back and tries again
     public void onHitRobot(HitRobotEvent e){
         if(!this.is_racing){
             this.back(50);
