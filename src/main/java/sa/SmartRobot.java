@@ -20,10 +20,10 @@ public class SmartRobot extends AdvancedRobot {
         this.addCustomEvent(this.myOdometer);
 
         // Go to the starting position
-        this.move(18,18);
+        this.move(18, 18);
 
         // Wait until the 3 rockquads are in their correct positions
-        for (int i = 0; i < 160 ; i++){
+        for (int i = 0; i < 160; i++) {
             this.doNothing();
         }
 
@@ -34,35 +34,35 @@ public class SmartRobot extends AdvancedRobot {
         this.is_racing = true;
 
         // Point to north
-        this.turnRight(360-this.getHeading());
+        this.turnRight(360 - this.getHeading());
 
         // Scan 3 times 3 different obstacles
-        while(this.robots_scanned<3)
-            if(!this.scanned) this.turnRadarRight(45);
+        while (this.robots_scanned < 3)
+            if (!this.scanned) this.turnRadarRight(45);
 
         // Go back to the starting position
-        this.move(18,18);
+        this.move(18, 18);
 
         System.out.println("Distance travelled -> " + String.format("%.2f", this.myOdometer.stop_race()));
 
     }
 
-    public void move(double xf, double yf){
-        double xi = getX();
-        double yi = getY();
+    public void move(double xf, double yf) {
+        double xi = this.getX();
+        double yi = this.getY();
         double distance = euclideanDistance(xi, yi, xf, yf);
 
         double angle = angleBetween(xi, yi, xf, yf);
 
         // Angle that the robot has to turn to be aligned with the desired position
-        angle = 180-angle;
+        angle = 180 - angle;
 
         this.turnLeft(normalRelativeAngleDegrees(angle + this.getHeading()));
         this.ahead(distance);
     }
 
     public void onScannedRobot(ScannedRobotEvent e) {
-        if(this.is_racing && !this.scanned){
+        if (this.is_racing && !this.scanned) {
             this.scanned = true;
 
             // Place the radar in its normal direction
@@ -72,7 +72,7 @@ public class SmartRobot extends AdvancedRobot {
             this.turnRight(e.getBearing());
 
             // Move in the rockquad's direction and stop before hitting it
-            this.ahead(e.getDistance()-50);
+            this.ahead(e.getDistance() - 50);
 
             // Outline the robot
             this.bypass_obstacle();
@@ -82,10 +82,10 @@ public class SmartRobot extends AdvancedRobot {
         }
     }
 
-    public void bypass_obstacle(){
+    public void bypass_obstacle() {
         this.turnLeft(90);
 
-        for(int i=0;i<53;i++){
+        for (int i = 0; i < 53; i++) {
             this.ahead(3);
             this.turnRight(3.375);
         }
@@ -94,19 +94,18 @@ public class SmartRobot extends AdvancedRobot {
     }
 
     // If it collides with another robot while going to the starting position, it goes back and tries again
-    public void onHitRobot(HitRobotEvent e){
-        if(!this.is_racing){
+    public void onHitRobot(HitRobotEvent e) {
+        if (!this.is_racing) {
             this.back(50);
             this.turnRight(45);
             this.ahead(60);
-            this.move(18,18);
+            this.move(18, 18);
         }
     }
 
-    public void onStatus(StatusEvent event){
-        if(event == null || event.getStatus() == null){
+    public void onStatus(StatusEvent event) {
+        if (event == null || event.getStatus() == null) {
             System.out.println("Invalid event");
-            return ;
         }
         this.myOdometer.calculateDistanceTravelled();
     }
@@ -116,7 +115,7 @@ public class SmartRobot extends AdvancedRobot {
         if (cd.getName().equals("MyOdometer")) {
             this.myOdometer.calculateDistanceTravelled();
         }
-        if (cd.getName().equals("IsRacing")){
+        if (cd.getName().equals("IsRacing")) {
             this.odometer.getRaceDistance();
         }
     }

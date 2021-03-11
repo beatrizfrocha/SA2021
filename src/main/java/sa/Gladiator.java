@@ -45,20 +45,20 @@ public class Gladiator extends TeamRobot implements Droid {
         double gun_angle = normalRelativeAngleDegrees(angle - this.getGunHeading());
 
         // When the robot hits an obstacle, it changes its direction
-        if(this.getVelocity() == 0){
+        if (this.getVelocity() == 0) {
             this.direction *= -1;
         }
 
         this.setTurnRight(normalizeBearing(rival.getBearing() + 90 - (15 * this.direction)));
 
-        if(this.getTime() % 5 == 0){
+        if (this.getTime() % 5 == 0) {
             this.direction *= -1;
             this.setAhead(4000 * this.direction);
         }
 
         this.turnGunRight(gun_angle);
 
-        if(this.getGunHeat() == 0 && Math.abs(this.getGunTurnRemaining()) < 30){
+        if (this.getGunHeat() == 0 && Math.abs(this.getGunTurnRemaining()) < 30) {
             this.fire(MAX_BULLET_POWER);
         }
 

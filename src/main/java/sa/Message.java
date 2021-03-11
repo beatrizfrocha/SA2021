@@ -16,7 +16,7 @@ public class Message implements Serializable {
     public final static int SHOOT = 1;
     public final static int REQUEST = 2;
 
-    public Message(){
+    public Message() {
         this.sender = null;
         this.receiver = null;
         this.content = null;
@@ -26,7 +26,7 @@ public class Message implements Serializable {
         this.y = 0;
     }
 
-    public Message (String sender, int type, double x, double y){
+    public Message(String sender, int type, double x, double y) {
         this.sender = sender;
         this.type = type;
         this.x = x;
