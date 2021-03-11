@@ -54,11 +54,11 @@ public class Message implements Serializable {
     }
 
     public double getX() {
-        return x;
+        return this.x;
     }
 
     public double getY() {
-        return y;
+        return this.y;
     }
 
     public void setSender(String sender) {
@@ -84,4 +84,5 @@ public class Message implements Serializable {
     public void setY(double y) {
         this.y = y;
     }
+
 }

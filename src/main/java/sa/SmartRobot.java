@@ -12,7 +12,7 @@ public class SmartRobot extends AdvancedRobot {
     private boolean is_racing = false;
     private boolean scanned = false;
 
-    private final MyOdometer myOdometer = new MyOdometer("MyOdometer", this);
+    private MyOdometer myOdometer = new MyOdometer("MyOdometer", this);
     private Odometer odometer = new Odometer("IsRacing", this);
     private int robots_scanned = 0;
 
@@ -54,7 +54,7 @@ public class SmartRobot extends AdvancedRobot {
 
         double angle = angleBetween(xi, yi, xf, yf);
 
-        // Conversão do ângulo da perspetiva dentro do triângulo para a do robot
+        // Angle that the robot has to turn to be aligned with the desired position
         angle = 180-angle;
 
         this.turnLeft(normalRelativeAngleDegrees(angle + this.getHeading()));
@@ -105,7 +105,7 @@ public class SmartRobot extends AdvancedRobot {
 
     public void onStatus(StatusEvent event){
         if(event == null || event.getStatus() == null){
-            System.out.println("Evento Inválido");
+            System.out.println("Invalid event");
             return ;
         }
         this.myOdometer.calculateDistanceTravelled();

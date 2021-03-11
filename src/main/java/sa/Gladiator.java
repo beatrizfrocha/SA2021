@@ -15,7 +15,8 @@ public class Gladiator extends TeamRobot implements Droid {
     private boolean boss_dead = false;
     private boolean saviour_dead = false;
     private boolean battlefield_mode = false;
-    private int direction;
+    private boolean peek = false;
+    private int direction = 1;
 
     public void run() {
         this.informPosition();
@@ -30,12 +31,12 @@ public class Gladiator extends TeamRobot implements Droid {
                 break;
             case Message.SHOOT:
                 this.rival = msg.getRival();
-                this.shoot_rival(rival);
+                this.shoot_rival(this.rival);
                 break;
         }
     }
 
-    private void shoot_rival(Rival rival) {
+    public void shoot_rival(Rival rival) {
 
         double posX = rival.getX() - this.getX();
         double posY = rival.getY() - this.getY();
@@ -100,6 +101,7 @@ public class Gladiator extends TeamRobot implements Droid {
         this.turnLeft(this.getHeading() % 90);
         // Battlefield's width
         this.ahead(800);
+        this.peek = true;
         this.turnLeft(90);
         while (true) {
             this.ahead(800);
