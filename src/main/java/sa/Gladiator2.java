@@ -11,12 +11,15 @@ import static sa.Utils.euclideanDistance;
 
 
 public class Gladiator2 extends TeamRobot {
-    private int direction = 1;
+
+    private int tries = 0;
+    private double x;
+    private double y;
+
     public void run() {
         setAdjustRadarForRobotTurn(true);
         setAdjustGunForRobotTurn(true);
     }
-
     public void onMessageReceived(MessageEvent evnt) {
 
         Message msg = (Message) evnt.getMessage();
@@ -25,10 +28,12 @@ public class Gladiator2 extends TeamRobot {
                 this.shoot(msg.getX(), msg.getY());
                 break;
             case Message.MOVE:
+                this.x = msg.getX();
+                this.y = msg.getY();
                 this.move(msg.getX(), msg.getY());
                 break;
             case Message.TURN:
-                this.move(msg.getX(), msg.getY());
+                this.turnLeft(360);
                 break;
 
         }
@@ -42,10 +47,18 @@ public class Gladiator2 extends TeamRobot {
         double angle = angleBetween(xi, yi, xf, yf);
 
         // Angle that the robot has to turn to be aligned with the desired position
-        angle = 180 - angle;
+        if(xi > xf && yi > yf)
+            angle = 90 + (90-angle);
+        if(xi < xf && yi < yf)
+            angle = 270 + (90-angle);
+        if(xi < xf && yi > yf)
+            angle = 270 - (90-angle);
+        if(xi > xf && yi < yf)
+            angle = 90 - (90-angle);
+
 
         this.turnLeft(normalRelativeAngleDegrees(angle + this.getHeading()));
-        this.ahead(distance);
+        this.ahead(distance-50);
     }
 
     public void shoot(double x, double y) {
@@ -59,7 +72,16 @@ public class Gladiator2 extends TeamRobot {
         this.turnGunRight(gun_angle);
         this.fire(MAX_BULLET_POWER);
 
+    }
 
+    public void onHitRobot(HitRobotEvent e) {
+        tries++;
+        if(euclideanDistance(this.getX(), this.getY(), this.x, this.y) > 10 && tries <= 5) {
+            this.back(50);
+            this.turnRight(45);
+            this.ahead(60);
+            this.move(this.x,this.y);
+        }
     }
 }
 

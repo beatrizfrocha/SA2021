@@ -41,6 +41,10 @@ public class Message implements Serializable {
         this.y = y;
     }
 
+    public Message(int type) {
+        this.type = type;
+    }
+
     public String getSender() {
         return this.sender;
     }
