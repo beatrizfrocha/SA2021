@@ -107,7 +107,7 @@ public class Shepherd extends TeamRobot {
     }
 
     public void mandaDancar(){
-        Message msg = new Message(Message.TURN);
+        Message msg = new Message(Message.SPIN);
         try {
             broadcastMessage(msg);
         } catch (IOException e) {

@@ -16,7 +16,7 @@ public class Message implements Serializable {
     public final static int SHOOT = 1;
     public final static int REQUEST = 2;
     public final static int MOVE = 3;
-    public final static int TURN = 4;
+    public final static int SPIN = 4;
 
     public Message() {
         this.sender = null;

@@ -18,8 +18,6 @@ public class Sheep extends TeamRobot implements Droid{
     private boolean is_moving = false;
 
     public void run() {
-        System.out.println(this.getName());
-        setAdjustRadarForRobotTurn(true);
         setAdjustGunForRobotTurn(true);
     }
     public void onMessageReceived(MessageEvent evnt) {
@@ -35,7 +33,7 @@ public class Sheep extends TeamRobot implements Droid{
                 this.y = msg.getY();
                 this.move(msg.getX(), msg.getY());
                 break;
-            case Message.TURN:
+            case Message.SPIN:
                 this.turnLeft(720);
                 break;
         }
