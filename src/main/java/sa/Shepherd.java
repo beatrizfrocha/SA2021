@@ -12,16 +12,15 @@ import static sa.Utils.euclideanDistance;
 
 public class Shepherd extends TeamRobot {
 
-    private List<String> new_teammates = new ArrayList<>();
+    private final List<String> new_teammates = new ArrayList<>();
+    private boolean moving = true;
 
     public void run() {
 
         String[] teammates = this.getTeammates();
 
-        if (teammates != null)
-        {
-            for(String member: teammates)
-            {
+        if (teammates != null) {
+            for(String member: teammates) {
                 String[] parts = member.split(" ");
                 int num = Integer.parseInt(parts[1].substring(1, parts[1].length() - 1));
                 num++;
@@ -43,6 +42,7 @@ public class Shepherd extends TeamRobot {
         }
 
         move(18,18);
+        moving = false;
 
         for (int i = 0; i < 60; i++) {
             this.doNothing();
@@ -74,7 +74,7 @@ public class Shepherd extends TeamRobot {
 
     public void onScannedRobot(ScannedRobotEvent e) {
 
-        if (!new_teammates.contains(e.getName())) {
+        if (!moving && !new_teammates.contains(e.getName())) {
             double angleToEnemy = e.getBearing();
 
             // Calculate the angle to the scanned robot
@@ -86,6 +86,13 @@ public class Shepherd extends TeamRobot {
 
             mandarAtacar(enemyX,enemyY);
         }
+    }
+
+    public void onHitRobot(HitRobotEvent e) {
+        this.back(50);
+        this.turnLeft(45);
+        this.ahead(60);
+        this.move(18,18);
     }
 
     // ---------------------- Comunicação ----------------------
@@ -118,7 +125,6 @@ public class Shepherd extends TeamRobot {
     }
 
     public void mandarMoverCanto(){
-        System.out.println("BREAK 1");
         double w = getBattleFieldWidth();
         double h = getBattleFieldHeight();
         Message msg1 = new Message(Message.MOVE,18+50,18+50);

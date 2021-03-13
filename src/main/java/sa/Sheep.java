@@ -15,6 +15,7 @@ public class Sheep extends TeamRobot implements Droid{
     private int tries = 0;
     private double x;
     private double y;
+    private boolean is_moving = false;
 
     public void run() {
         System.out.println(this.getName());
@@ -29,6 +30,7 @@ public class Sheep extends TeamRobot implements Droid{
                 this.shoot(msg.getX(), msg.getY());
                 break;
             case Message.MOVE:
+                is_moving = true;
                 this.x = msg.getX();
                 this.y = msg.getY();
                 this.move(msg.getX(), msg.getY());
@@ -75,7 +77,7 @@ public class Sheep extends TeamRobot implements Droid{
 
     public void onHitRobot(HitRobotEvent e) {
         tries++;
-        if(euclideanDistance(this.getX(), this.getY(), this.x, this.y) > 50 && tries <= 50) {
+        if(is_moving && euclideanDistance(this.getX(), this.getY(), this.x, this.y) > 50 && tries <= 50) {
             this.back(50);
             this.turnRight(45);
             this.ahead(60);
