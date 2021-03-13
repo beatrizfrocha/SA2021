@@ -10,13 +10,14 @@ import static sa.Utils.angleBetween;
 import static sa.Utils.euclideanDistance;
 
 
-public class Gladiator2 extends TeamRobot {
+public class Sheep extends TeamRobot implements Droid{
 
     private int tries = 0;
     private double x;
     private double y;
 
     public void run() {
+        System.out.println(this.getName());
         setAdjustRadarForRobotTurn(true);
         setAdjustGunForRobotTurn(true);
     }
@@ -33,9 +34,8 @@ public class Gladiator2 extends TeamRobot {
                 this.move(msg.getX(), msg.getY());
                 break;
             case Message.TURN:
-                this.turnLeft(360);
+                this.turnLeft(720);
                 break;
-
         }
     }
 
@@ -56,7 +56,6 @@ public class Gladiator2 extends TeamRobot {
         if(xi > xf && yi < yf)
             angle = 90 - (90-angle);
 
-
         this.turnLeft(normalRelativeAngleDegrees(angle + this.getHeading()));
         this.ahead(distance-50);
     }
@@ -76,7 +75,7 @@ public class Gladiator2 extends TeamRobot {
 
     public void onHitRobot(HitRobotEvent e) {
         tries++;
-        if(euclideanDistance(this.getX(), this.getY(), this.x, this.y) > 10 && tries <= 5) {
+        if(euclideanDistance(this.getX(), this.getY(), this.x, this.y) > 50 && tries <= 50) {
             this.back(50);
             this.turnRight(45);
             this.ahead(60);
