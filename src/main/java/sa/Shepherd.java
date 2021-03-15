@@ -90,11 +90,12 @@ public class Shepherd extends TeamRobot {
     }
 
     public void onHitRobot(HitRobotEvent e) {
-        if(hits<10){
+        if(hits<5){
             this.back(50);
             this.turnLeft(45);
             this.ahead(60);
             this.move(18,18);
+            hits++;
         }
         else{
             this.back(50);
