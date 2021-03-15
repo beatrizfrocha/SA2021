@@ -14,6 +14,7 @@ public class Shepherd extends TeamRobot {
 
     private final List<String> new_teammates = new ArrayList<>();
     private boolean moving = true;
+    private int hits = 0;
 
     public void run() {
 
@@ -89,10 +90,20 @@ public class Shepherd extends TeamRobot {
     }
 
     public void onHitRobot(HitRobotEvent e) {
-        this.back(50);
-        this.turnLeft(45);
-        this.ahead(60);
-        this.move(18,18);
+        if(hits<10){
+            this.back(50);
+            this.turnLeft(45);
+            this.ahead(60);
+            this.move(18,18);
+        }
+        else{
+            this.back(50);
+            this.turnRight(45);
+            this.ahead(60);
+            this.move(18,18);
+
+        }
+
     }
 
     // ---------------------- Comunicação ----------------------
