@@ -1,5 +1,7 @@
 package sa;
 
+import robocode.ScannedRobotEvent;
+
 public class Rival {
 
     private double bearing;
@@ -8,8 +10,7 @@ public class Rival {
     private double heading;
     private double velocity;
     private String name;
-    private double x;
-    private double y;
+    private Position p;
 
     public Rival() {
         this.bearing = 0;
@@ -18,8 +19,17 @@ public class Rival {
         this.heading = 0;
         this.velocity = 0;
         this.name = null;
-        this.x = 0;
-        this.y = 0;
+        this.p = null;
+    }
+
+    public Rival(ScannedRobotEvent e, Position p){
+        this.bearing = e.getBearing();
+        this.distance = e.getDistance();
+        this.energy = e.getEnergy();
+        this.heading = e.getHeading();
+        this.velocity = e.getVelocity();
+        this.name = e.getName();
+        this.p = p;
     }
 
     public double getBearing() {
@@ -46,13 +56,9 @@ public class Rival {
         return this.name;
     }
 
-    public double getX() {
-        return this.x;
-    }
+    public double getX() { return p.getX(); }
 
-    public double getY() {
-        return this.y;
-    }
+    public double getY() { return p.getY(); }
 
     public void reconfigure() {
         this.bearing = 0;
@@ -61,8 +67,19 @@ public class Rival {
         this.heading = 0;
         this.velocity = 0;
         this.name = null;
-        this.x = 0;
-        this.y = 0;
+        this.p = null;
     }
 
+    @Override
+    public String toString() {
+        return "Rival{" +
+                "bearing=" + bearing +
+                ", distance=" + distance +
+                ", energy=" + energy +
+                ", heading=" + heading +
+                ", velocity=" + velocity +
+                ", name='" + name + '\'' +
+                ", p=" + p.toString() +
+                '}';
+    }
 }
