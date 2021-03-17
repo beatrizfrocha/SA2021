@@ -113,7 +113,7 @@ public class Gladiator extends TeamRobot implements Droid {
     }
 
     public void informPosition() {
-        Message msg = new Message(this.getName(), Message.INFO, this.getX(), this.getY());
+        Message msg = new Message(this.getName(), Message.INFO, new Position(this.getX(), this.getY()));
         try {
             this.broadcastMessage(msg);
         } catch (IOException e) {

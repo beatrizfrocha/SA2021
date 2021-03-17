@@ -46,9 +46,11 @@ public class Utils {
         return angle;
     }
 
-    public static void move(double xf, double yf, TeamRobot robot) {
+    public static void move(Position p, TeamRobot robot) {
         double xi = robot.getX();
         double yi = robot.getY();
+        double xf = p.getX();
+        double yf = p.getY();
         double distance = euclideanDistance(xi, yi, xf, yf);
 
         double angle = angleBetween(xi, yi, xf, yf);
@@ -64,7 +66,7 @@ public class Utils {
             angle = 90 - (90-angle);
 
         robot.turnLeft(normalRelativeAngleDegrees(angle + robot.getHeading()));
-        robot.ahead(distance-50);
+        robot.ahead(distance);
     }
 
 }

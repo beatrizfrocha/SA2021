@@ -9,8 +9,7 @@ public class Message implements Serializable {
     private String content;
     private Rival rival;
     private int type;
-    private double x;
-    private double y;
+    private Position p;
 
     public final static int INFO = 0;
     public final static int SHOOT = 1;
@@ -24,21 +23,18 @@ public class Message implements Serializable {
         this.content = null;
         this.rival = null;
         this.type = 0;
-        this.x = 0;
-        this.y = 0;
+        this.p = null;
     }
 
-    public Message(String sender, int type, double x, double y) {
+    public Message(String sender, int type, Position p) {
         this.sender = sender;
         this.type = type;
-        this.x = x;
-        this.y = y;
+        this.p = p;
     }
 
-    public Message(int type, double x, double y) {
+    public Message(int type, Position p) {
         this.type = type;
-        this.x = x;
-        this.y = y;
+        this.p = p;
     }
 
     public Message(int type) {
@@ -66,11 +62,11 @@ public class Message implements Serializable {
     }
 
     public double getX() {
-        return this.x;
+        return p.getX();
     }
 
     public double getY() {
-        return this.y;
+        return p.getY();
     }
 
     public void setSender(String sender) {
@@ -90,11 +86,11 @@ public class Message implements Serializable {
     }
 
     public void setX(double x) {
-        this.x = x;
+        p.setX(x);
     }
 
     public void setY(double y) {
-        this.y = y;
+        p.setY(y);
     }
 
 }

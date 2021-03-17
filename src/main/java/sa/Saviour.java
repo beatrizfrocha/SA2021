@@ -63,7 +63,7 @@ public class Saviour extends TeamRobot {
         Message msg = (Message) evnt.getMessage();
         switch (msg.getType()) {
             case Message.INFO:
-                move(msg.getX(),msg.getY(),this);
+                move(new Position(msg.getX(),msg.getY()),this);
                 break;
         }
     }

@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
 
-import static robocode.util.Utils.normalRelativeAngleDegrees;
 import static sa.Utils.*;
 
 public class Boss extends TeamRobot {
@@ -43,7 +42,7 @@ public class Boss extends TeamRobot {
             Position p = getBetterPosition();
             System.out.println("Moving to " + p.toString());
             this.destino = p;
-            move(p);
+            move(p,this);
             System.out.println(".............................");
         }
     }
@@ -98,13 +97,13 @@ public class Boss extends TeamRobot {
             this.turnRight(45);
         }
         this.ahead(60);
-        this.move(destino);
+        move(destino,this);
     }
 
     // ---------------------- Comunication ----------------------
 
-    public void attack(double x, double y){
-        Message msg = new Message(Message.SHOOT,x,y);
+    public void attack(Position p){
+        Message msg = new Message(Message.SHOOT,p);
         try {
             this.broadcastMessage(msg);
         } catch (IOException e) {
@@ -121,8 +120,8 @@ public class Boss extends TeamRobot {
         }
     }
 
-    public void move_to_position(double x, double y){
-        Message msg = new Message(Message.MOVE,x,y);
+    public void move_to_position(Position p){
+        Message msg = new Message(Message.MOVE,p);
         try {
             this.broadcastMessage(msg);
         } catch (IOException e) {
@@ -133,10 +132,10 @@ public class Boss extends TeamRobot {
     public void move_to_corner(){
         double w = this.getBattleFieldWidth();
         double h = this.getBattleFieldHeight();
-        Message msg1 = new Message(Message.MOVE,18+50,18+50);
-        Message msg2 = new Message(Message.MOVE,w-18,18);
-        Message msg3 = new Message(Message.MOVE,18,h-18);
-        Message msg4 = new Message(Message.MOVE,w-18,h-18);
+        Message msg1 = new Message(Message.MOVE,new Position(18+50,18+50));
+        Message msg2 = new Message(Message.MOVE,new Position(w-18,18));
+        Message msg3 = new Message(Message.MOVE,new Position(18,h-18));
+        Message msg4 = new Message(Message.MOVE,new Position(w-18,h-18));
         Message[] msgs = new Message[]{msg1,msg2,msg3,msg4};
         try {
             for(int i = 1; i < this.new_teammates.size(); i++){
@@ -145,31 +144,6 @@ public class Boss extends TeamRobot {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    // ---------------------- Movement ----------------------
-
-    public void move(Position p) {
-        double xi = this.getX();
-        double yi = this.getY();
-        double xf = p.getX();
-        double yf = p.getY();
-        double distance = euclideanDistance(xi, yi, xf, yf);
-
-        double angle = angleBetween(xi, yi, xf, yf);
-
-        // Angle that the robot has to turn to be aligned with the desired position
-        if(xi > xf && yi > yf)
-            angle = 90 + (90-angle);
-        if(xi < xf && yi < yf)
-            angle = 270 + (90-angle);
-        if(xi < xf && yi > yf)
-            angle = 270 - (90-angle);
-        if(xi > xf && yi < yf)
-            angle = 90 - (90-angle);
-
-        this.turnLeft(normalRelativeAngleDegrees(angle + this.getHeading()));
-        this.ahead(distance);
     }
 
     // ---------------------- Util ----------------------
