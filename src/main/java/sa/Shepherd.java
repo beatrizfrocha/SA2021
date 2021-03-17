@@ -27,7 +27,7 @@ public class Shepherd extends TeamRobot {
                 num++;
 
                 int count = 0;
-                // ver se no array teammates existem mais que 1 dos parts[0]
+                // check if there are repeated elements from parts[0] in array teammates
                 for(String t: teammates)
                     if(t.contains(parts[0]))
                         count++;
@@ -42,40 +42,40 @@ public class Shepherd extends TeamRobot {
             }
         }
 
-        move(18,18);
-        moving = false;
+        this.move(18,18);
+        this.moving = false;
 
         for (int i = 0; i < 60; i++) {
             this.doNothing();
         }
 
-        mandaDancar();
+        this.dance();
 
         for (int i = 0; i < 120; i++) {
             this.doNothing();
         }
 
-        mandarMover(400,300);
+        this.move_to_position(400,300);
 
         for (int i = 0; i < 500; i++) {
             this.doNothing();
         }
 
-        mandarMoverCanto();
+        this.move_to_corner();
 
         for (int i = 0; i < 300; i++) {
             this.doNothing();
         }
 
-        // Gira o radar infinitamente
-        turnRadarLeftRadians(Double.POSITIVE_INFINITY);
+        // Rotate the radar infinitely
+        this.turnRadarLeftRadians(Double.POSITIVE_INFINITY);
     }
 
-    // ---------------------- Eventos ----------------------
+    // ---------------------- Events ----------------------
 
     public void onScannedRobot(ScannedRobotEvent e) {
 
-        if (!moving && !new_teammates.contains(e.getName())) {
+        if (!this.moving && !this.new_teammates.contains(e.getName())) {
             double angleToEnemy = e.getBearing();
 
             // Calculate the angle to the scanned robot
@@ -85,17 +85,17 @@ public class Shepherd extends TeamRobot {
             double enemyX = this.getX() + Math.sin(angle) * e.getDistance();
             double enemyY = this.getY() + Math.cos(angle) * e.getDistance();
 
-            mandarAtacar(enemyX,enemyY);
+            this.attack(enemyX,enemyY);
         }
     }
 
     public void onHitRobot(HitRobotEvent e) {
-        if(hits<5){
+        if(this.hits<5){
             this.back(50);
             this.turnLeft(45);
             this.ahead(60);
             this.move(18,18);
-            hits++;
+            this.hits++;
         }
         else{
             this.back(50);
@@ -107,38 +107,38 @@ public class Shepherd extends TeamRobot {
 
     }
 
-    // ---------------------- Comunicação ----------------------
+    // ---------------------- Comunication ----------------------
 
-    public void mandarAtacar(double x, double y){
+    public void attack(double x, double y){
         Message msg = new Message(Message.SHOOT,x,y);
         try {
-            broadcastMessage(msg);
+            this.broadcastMessage(msg);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void mandaDancar(){
+    public void dance(){
         Message msg = new Message(Message.SPIN);
         try {
-            broadcastMessage(msg);
+            this.broadcastMessage(msg);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void mandarMover(double x, double y){
+    public void move_to_position(double x, double y){
         Message msg = new Message(Message.MOVE,x,y);
         try {
-            broadcastMessage(msg);
+            this.broadcastMessage(msg);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void mandarMoverCanto(){
-        double w = getBattleFieldWidth();
-        double h = getBattleFieldHeight();
+    public void move_to_corner(){
+        double w = this.getBattleFieldWidth();
+        double h = this.getBattleFieldHeight();
         Message msg1 = new Message(Message.MOVE,18+50,18+50);
         Message msg2 = new Message(Message.MOVE,w-18,18);
         Message msg3 = new Message(Message.MOVE,18,h-18);
@@ -146,14 +146,14 @@ public class Shepherd extends TeamRobot {
         Message[] msgs = new Message[]{msg1,msg2,msg3,msg4};
         try {
             for(int i = 1; i < this.new_teammates.size(); i++){
-                sendMessage(this.new_teammates.get(i),msgs[i-1]);
+                this.sendMessage(this.new_teammates.get(i),msgs[i-1]);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    // ---------------------- Movimentação ----------------------
+    // ---------------------- Movement ----------------------
 
     public void move(double xf, double yf) {
         double xi = this.getX();

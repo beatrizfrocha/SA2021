@@ -2,8 +2,6 @@ package sa;
 
 import robocode.*;
 
-import java.io.IOException;
-
 import static robocode.Rules.MAX_BULLET_POWER;
 import static robocode.util.Utils.normalRelativeAngleDegrees;
 import static sa.Utils.angleBetween;
@@ -18,7 +16,7 @@ public class Sheep extends TeamRobot implements Droid{
     private boolean is_moving = false;
 
     public void run() {
-        setAdjustGunForRobotTurn(true);
+        this.setAdjustGunForRobotTurn(true);
     }
     public void onMessageReceived(MessageEvent evnt) {
 
@@ -28,7 +26,7 @@ public class Sheep extends TeamRobot implements Droid{
                 this.shoot(msg.getX(), msg.getY());
                 break;
             case Message.MOVE:
-                is_moving = true;
+                this.is_moving = true;
                 this.x = msg.getX();
                 this.y = msg.getY();
                 this.move(msg.getX(), msg.getY());
@@ -74,8 +72,8 @@ public class Sheep extends TeamRobot implements Droid{
     }
 
     public void onHitRobot(HitRobotEvent e) {
-        tries++;
-        if(is_moving && euclideanDistance(this.getX(), this.getY(), this.x, this.y) > 50 && tries <= 50) {
+        this.tries++;
+        if(this.is_moving && euclideanDistance(this.getX(), this.getY(), this.x, this.y) > 50) {
             this.back(50);
             this.turnRight(45);
             this.ahead(60);

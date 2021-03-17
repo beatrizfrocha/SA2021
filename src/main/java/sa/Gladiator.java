@@ -104,8 +104,11 @@ public class Gladiator extends TeamRobot implements Droid {
         this.peek = true;
         this.turnLeft(90);
         while (true) {
+            if(this.getTime()%5==0){
+                this.direction*=-1;
+            }
             this.ahead(800);
-            this.turnLeft(90);
+            this.turnLeft(90*this.direction);
         }
     }
 
