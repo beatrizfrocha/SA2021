@@ -1,5 +1,9 @@
 package sa;
 
+import robocode.TeamRobot;
+
+import static robocode.util.Utils.normalRelativeAngleDegrees;
+
 public class Utils {
 
     public static double euclideanDistance(double x1, double y1, double x2, double y2) {
@@ -24,6 +28,27 @@ public class Utils {
         while (angle > 180) angle -= 360;
         while (angle < -180) angle += 360;
         return angle;
+    }
+
+    public static void move(double xf, double yf, TeamRobot robot) {
+        double xi = robot.getX();
+        double yi = robot.getY();
+        double distance = euclideanDistance(xi, yi, xf, yf);
+
+        double angle = angleBetween(xi, yi, xf, yf);
+
+        // Angle that the robot has to turn to be aligned with the desired position
+        if(xi > xf && yi > yf)
+            angle = 90 + (90-angle);
+        if(xi < xf && yi < yf)
+            angle = 270 + (90-angle);
+        if(xi < xf && yi > yf)
+            angle = 270 - (90-angle);
+        if(xi > xf && yi < yf)
+            angle = 90 - (90-angle);
+
+        robot.turnLeft(normalRelativeAngleDegrees(angle + robot.getHeading()));
+        robot.ahead(distance-50);
     }
 
 }
