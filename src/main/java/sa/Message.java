@@ -69,6 +69,10 @@ public class Message implements Serializable {
         return p.getY();
     }
 
+    public Position getPosition() {
+        return p;
+    }
+
     public void setSender(String sender) {
         this.sender = sender;
     }

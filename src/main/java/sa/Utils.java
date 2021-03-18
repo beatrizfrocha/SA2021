@@ -69,4 +69,31 @@ public class Utils {
         robot.ahead(distance);
     }
 
+    public static Map<String,Position> getNewTeammates(TeamRobot team){
+        Map<String,Position> new_teammates = new HashMap<>();
+        String[] teammates = team.getTeammates();
+
+        if (teammates != null) {
+            for(String member: teammates) {
+                String[] parts = member.split(" ");
+                int num = Integer.parseInt(parts[1].substring(1, parts[1].length() - 1));
+                num++;
+
+                int count = 0;
+                // check if there are repeated elements from parts[0] in array teammates
+                for(String t: teammates)
+                    if(t.contains(parts[0]))
+                        count++;
+
+                String newVersion;
+                if(count > 1)
+                    newVersion = parts[0] + " " + "(" + num + ")";
+                else
+                    newVersion = parts[0];
+
+                new_teammates.put(newVersion,null);
+            }
+        }
+        return new_teammates;
+    }
 }

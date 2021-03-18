@@ -1,9 +1,6 @@
 package sa;
 
-import robocode.HitRobotEvent;
-import robocode.RobotDeathEvent;
-import robocode.ScannedRobotEvent;
-import robocode.TeamRobot;
+import robocode.*;
 
 import java.io.IOException;
 import java.util.*;
@@ -20,7 +17,7 @@ public class Boss extends TeamRobot {
     private Map<Integer, SimpleEntry<Position,Position>> quadrantes;
 
     // Amigos
-    private final List<String> new_teammates = new ArrayList<>();
+    private Map<String, Position> teammates = new HashMap<>();
     private boolean sicko_mode = false; // modo de ataque
     private int gladiators_alive = 3;
 
@@ -33,7 +30,7 @@ public class Boss extends TeamRobot {
     public void run() {
         this.quadrantes = initQuadrantes(getBattleFieldWidth(),getBattleFieldHeight());
 
-        this.getNewTeammates();
+        this.teammates = getNewTeammates(this);
         setAdjustRadarForRobotTurn(true);
         setAdjustGunForRobotTurn(true);
         turnRadarLeft(360);
@@ -49,6 +46,15 @@ public class Boss extends TeamRobot {
 
     // ---------------------- Events ----------------------
 
+    public void onMessageReceived(MessageEvent event) {
+        Message message = (Message) event.getMessage();
+
+        if(message.getType() == Message.INFO){
+            //msgsReceived++;
+            teammates.put(message.getSender(), message.getPosition());
+        }
+    }
+
     public void onScannedRobot(ScannedRobotEvent e) {
 
         if(sicko_mode){
@@ -56,7 +62,7 @@ public class Boss extends TeamRobot {
         }
         else{
             // Encontra inimigo
-            if (!this.new_teammates.contains(e.getName())) {
+            if (!this.teammates.containsKey(e.getName())) {
                 Position p = this.findPosition(e);
                 Rival enemy = new Rival(e,p);
                 enemies.put(e.getName(), enemy);
@@ -73,7 +79,7 @@ public class Boss extends TeamRobot {
         String name = evnt.getName();
 
         // Morreu inimigo
-        if(!this.new_teammates.contains(name)){
+        if(!this.teammates.containsKey(name)){
             enemies_alive--;
             enemies.remove(name);
         }
@@ -102,75 +108,34 @@ public class Boss extends TeamRobot {
 
     // ---------------------- Comunication ----------------------
 
-    public void attack(Position p){
-        Message msg = new Message(Message.SHOOT,p);
+    /*public void attack(Position p){
+        //Message msg = new Message(Message.ATTACK,p);
         try {
             this.broadcastMessage(msg);
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void dance(){
-        Message msg = new Message(Message.SPIN);
-        try {
-            this.broadcastMessage(msg);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void move_to_position(Position p){
-        Message msg = new Message(Message.MOVE,p);
-        try {
-            this.broadcastMessage(msg);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void move_to_corner(){
-        double w = this.getBattleFieldWidth();
-        double h = this.getBattleFieldHeight();
-        Message msg1 = new Message(Message.MOVE,new Position(18+50,18+50));
-        Message msg2 = new Message(Message.MOVE,new Position(w-18,18));
-        Message msg3 = new Message(Message.MOVE,new Position(18,h-18));
-        Message msg4 = new Message(Message.MOVE,new Position(w-18,h-18));
-        Message[] msgs = new Message[]{msg1,msg2,msg3,msg4};
-        try {
-            for(int i = 1; i < this.new_teammates.size(); i++){
-                this.sendMessage(this.new_teammates.get(i),msgs[i-1]);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    }*/
 
     // ---------------------- Util ----------------------
 
-    private void getNewTeammates(){
-        String[] teammates = this.getTeammates();
-        if (teammates != null) {
-            for(String member: teammates) {
-                String[] parts = member.split(" ");
-                int num = Integer.parseInt(parts[1].substring(1, parts[1].length() - 1));
-                num++;
-
-                int count = 0;
-                // check if there are repeated elements from parts[0] in array teammates
-                for(String t: teammates)
-                    if(t.contains(parts[0]))
-                        count++;
-
-                String newVersion;
-                if(count > 1)
-                    newVersion = parts[0] + " " + "(" + num + ")";
-                else
-                    newVersion = parts[0];
-
-                this.new_teammates.add(newVersion);
+    public Rival selectTarget() {
+        double totalDistance = 0;
+        double minTotalDistance = 10000;
+        Rival res = null;
+        teammates.put(getName(), new Position(getX(), getY()));
+        for (Rival enemy : enemies.values()) {
+            for (Position teammate : teammates.values()) {
+                double distance = euclideanDistance(enemy.getX(), enemy.getY(), teammate.getX(), teammate.getY());
+                totalDistance += distance;
+            }
+            if (totalDistance < minTotalDistance) {
+                minTotalDistance = totalDistance;
+                res = enemy;
             }
         }
+
+        return res;
     }
 
     private Position findPosition(ScannedRobotEvent e){
