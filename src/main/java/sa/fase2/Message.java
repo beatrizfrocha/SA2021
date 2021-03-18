@@ -9,7 +9,6 @@ public class Message implements Serializable {
     private String sender;
     private String receiver;
     private String content;
-    private Rival rival;
     private int type;
     private Position p;
 
@@ -23,7 +22,6 @@ public class Message implements Serializable {
         this.sender = null;
         this.receiver = null;
         this.content = null;
-        this.rival = null;
         this.type = 0;
         this.p = null;
     }
@@ -53,10 +51,6 @@ public class Message implements Serializable {
 
     public String getContent() {
         return this.content;
-    }
-
-    public Rival getRival() {
-        return this.rival;
     }
 
     public int getType() {
