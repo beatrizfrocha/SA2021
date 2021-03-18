@@ -1,4 +1,6 @@
-package sa;
+package sa.fase2;
+
+import sa.Position;
 
 import java.io.Serializable;
 

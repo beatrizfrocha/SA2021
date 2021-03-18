@@ -1,4 +1,4 @@
-package sa;
+package sa.fase2;
 
 import robocode.*;
 

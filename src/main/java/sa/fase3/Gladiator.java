@@ -1,11 +1,15 @@
-package sa;
+package sa.fase3;
 
 import robocode.*;
+import sa.Position;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static robocode.Rules.MAX_BULLET_POWER;
 import static robocode.util.Utils.normalRelativeAngleDegrees;
+import static sa.Utils.informPosition;
 import static sa.Utils.normalizeBearing;
 
 public class Gladiator extends TeamRobot implements Droid {
@@ -17,9 +21,14 @@ public class Gladiator extends TeamRobot implements Droid {
     private boolean battlefield_mode = false;
     private boolean peek = false;
     private int direction = 1;
+    private Map<String, Position> teammates = new HashMap<>();
 
     public void run() {
-        this.informPosition();
+        informPosition(this);
+        for (int i = 0; i < 10; i++) {
+            this.doNothing();
+        }
+        System.out.println("My team is " + teammates.toString());
         this.setAdjustGunForRobotTurn(true);
     }
 
@@ -27,11 +36,14 @@ public class Gladiator extends TeamRobot implements Droid {
         Message msg = (Message) evnt.getMessage();
         switch (msg.getType()) {
             case Message.REQUEST:
-                this.informPosition();
+                informPosition(this);
                 break;
-            case Message.SHOOT:
+            case Message.ATTACK:
                 this.rival = msg.getRival();
                 this.shoot_rival(this.rival);
+                break;
+            case Message.INFO:
+                teammates.put(msg.getSender(), msg.getPosition());
                 break;
         }
     }
@@ -65,7 +77,7 @@ public class Gladiator extends TeamRobot implements Droid {
     }
 
     public void onHitRobot(HitRobotEvent evnt) {
-        if (this.isTeammate(evnt.getName())) {
+        if (this.teammates.containsKey(evnt.getName())) {
             this.ahead(100);
         } else {
             this.turnRight(evnt.getBearing());
@@ -76,7 +88,7 @@ public class Gladiator extends TeamRobot implements Droid {
 
     public void onRobotDeath(RobotDeathEvent evnt) {
         String name = evnt.getName();
-        if (name.equals(this.rival.getName())) {
+        if (this.rival != null && name.equals(this.rival.getName())) {
             this.rival.reconfigure();
             this.shooting = false;
         }
@@ -109,15 +121,6 @@ public class Gladiator extends TeamRobot implements Droid {
             }
             this.ahead(800);
             this.turnLeft(90*this.direction);
-        }
-    }
-
-    public void informPosition() {
-        Message msg = new Message(this.getName(), Message.INFO, new Position(this.getX(), this.getY()));
-        try {
-            this.broadcastMessage(msg);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

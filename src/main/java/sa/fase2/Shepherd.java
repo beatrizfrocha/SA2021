@@ -1,10 +1,11 @@
-package sa;
+package sa.fase2;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import robocode.*;
+import sa.Position;
 
 import static robocode.util.Utils.normalRelativeAngleDegrees;
 import static sa.Utils.angleBetween;

@@ -1,6 +1,7 @@
-package sa;
+package sa.fase3;
 
 import robocode.*;
+import sa.Position;
 
 import java.io.IOException;
 import java.util.*;
@@ -28,9 +29,15 @@ public class Boss extends TeamRobot {
     // ----------------------- Main ------------------------
 
     public void run() {
+
+        informPosition(this);
+        for (int i = 0; i < 10; i++) {
+            this.doNothing();
+        }
+        System.out.println("My team is " + teammates.toString());
+
         this.quadrantes = initQuadrantes(getBattleFieldWidth(),getBattleFieldHeight());
 
-        this.teammates = getNewTeammates(this);
         setAdjustRadarForRobotTurn(true);
         setAdjustGunForRobotTurn(true);
         turnRadarLeft(360);
@@ -108,14 +115,43 @@ public class Boss extends TeamRobot {
 
     // ---------------------- Comunication ----------------------
 
-    /*public void attack(Position p){
-        //Message msg = new Message(Message.ATTACK,p);
+    public void attack(Rival r){
+        Message msg = new Message(Message.ATTACK,r);
         try {
             this.broadcastMessage(msg);
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }*/
+    }
+
+    public void info() {
+        Message msg = new Message(Message.INFO);
+        try {
+            broadcastMessage(msg);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void help(Rival r) {
+        Message msg = new Message(Message.HELP,r);
+
+        try{
+            broadcastMessage(msg);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void informTeammates(){
+        Message msg = new Message(Message.INFO);
+
+        try{
+            broadcastMessage(msg);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
 
     // ---------------------- Util ----------------------
 

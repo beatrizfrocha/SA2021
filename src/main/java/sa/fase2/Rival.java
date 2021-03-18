@@ -1,6 +1,7 @@
-package sa;
+package sa.fase2;
 
 import robocode.ScannedRobotEvent;
+import sa.Position;
 
 public class Rival {
 
