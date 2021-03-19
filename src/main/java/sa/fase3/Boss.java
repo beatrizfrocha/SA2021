@@ -84,7 +84,7 @@ public class Boss extends TeamRobot {
             }
         }
         else{
-            Position p = this.findPosition(e);
+            Position p = findPosition(this,e);
             // Encontra inimigo
             if (!this.teammates.containsKey(e.getName())) {
 
@@ -241,19 +241,6 @@ public class Boss extends TeamRobot {
         else
             System.out.println("Rival is null.");
         return res;
-    }
-
-    private Position findPosition(ScannedRobotEvent e){
-        double angleToEnemy = e.getBearing();
-
-        // Calculate the angle to the scanned robot
-        double angle = Math.toRadians((this.getHeading() + angleToEnemy % 360));
-
-        // Calculate the coordinates of the robot
-        double enemyX = this.getX() + Math.sin(angle) * e.getDistance();
-        double enemyY = this.getY() + Math.cos(angle) * e.getDistance();
-
-        return new Position(enemyX,enemyY);
     }
 
     private Position getBetterPosition(){

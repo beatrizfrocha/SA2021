@@ -1,5 +1,6 @@
 package sa;
 
+import robocode.ScannedRobotEvent;
 import robocode.TeamRobot;
 import sa.fase3.Message;
 
@@ -47,6 +48,19 @@ public class Utils {
         while (angle > 180) angle -= 360;
         while (angle < -180) angle += 360;
         return angle;
+    }
+
+    public static Position findPosition(TeamRobot r, ScannedRobotEvent e){
+        double angleToEnemy = e.getBearing();
+
+        // Calculate the angle to the scanned robot
+        double angle = Math.toRadians((r.getHeading() + angleToEnemy % 360));
+
+        // Calculate the coordinates of the robot
+        double enemyX = r.getX() + Math.sin(angle) * e.getDistance();
+        double enemyY = r.getY() + Math.cos(angle) * e.getDistance();
+
+        return new Position(enemyX,enemyY);
     }
 
     public static void move(Position p, TeamRobot robot) {
