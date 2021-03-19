@@ -111,9 +111,9 @@ public class Boss extends TeamRobot {
 
     public void onHitByBullet(HitByBulletEvent e) {
 
-        /*if(!this.teammates.containsKey(e.getName())) {
+        if(!this.teammates.containsKey(e.getName())) {
             avengeMe(new Rival(e));
-        }*/
+        }
 
         turnRight(normalRelativeAngleDegrees(90 - (getHeading() - e.getHeading())));
 
@@ -125,7 +125,7 @@ public class Boss extends TeamRobot {
         //Position p = getBetterPosition();
         //System.out.println("Moving to " + p.toString());
         //move(p,this);
-        //comeWithMe(p);
+        comeWithMe(new Position(this.getX(),this.getY()));
     }
 
     public void onRobotDeath(RobotDeathEvent evnt) {
