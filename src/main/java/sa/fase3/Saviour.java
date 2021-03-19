@@ -3,7 +3,6 @@ package sa.fase3;
 import robocode.*;
 import sa.Position;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +29,11 @@ public class Saviour extends TeamRobot {
             this.doNothing();
         }
         System.out.println("My team is " + teammates.toString());
+
+        // !!!!!!!!!!!!!!!!!!!!!!!!! TEMPORÁRIO !!!!!!!!!!!!!!!!!!!!!!!!!
+        for (int i = 0; i < 100000; i++) {
+            this.doNothing();
+        }
 
         this.setAdjustGunForRobotTurn(true);
         // Loop forever

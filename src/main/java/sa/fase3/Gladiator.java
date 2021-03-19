@@ -3,7 +3,6 @@ package sa.fase3;
 import robocode.*;
 import sa.Position;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +39,7 @@ public class Gladiator extends TeamRobot implements Droid {
                 break;
             case Message.ATTACK:
                 this.rival = msg.getRival();
+                this.shooting = true;
                 this.shoot_rival(this.rival);
                 break;
             case Message.INFO:
@@ -88,18 +88,20 @@ public class Gladiator extends TeamRobot implements Droid {
 
     public void onRobotDeath(RobotDeathEvent evnt) {
         String name = evnt.getName();
+        System.out.println("My rival is = " + this.rival.getName());
+        System.out.println("This robot died = " + name);
         if (this.rival != null && name.equals(this.rival.getName())) {
             this.rival.reconfigure();
             this.shooting = false;
         }
-        if (name.equals("sa.Boss*")) {
+        if (name.contains("Boss")) {
             this.boss_dead = true;
             if (this.saviour_dead) {
                 this.battlefield_mode = true;
                 this.goAroundBattlefield();
             }
         }
-        if (name.equals("sa.Saviour*")) {
+        if (name.contains("Saviour")) {
             this.saviour_dead = true;
             if (this.boss_dead) {
                 this.battlefield_mode = true;

@@ -3,7 +3,7 @@ package sa.fase3;
 import robocode.ScannedRobotEvent;
 import sa.Position;
 
-public class Rival {
+public class Rival implements java.io.Serializable{
 
     private double bearing;
     private double distance;
@@ -31,6 +31,16 @@ public class Rival {
         this.velocity = e.getVelocity();
         this.name = e.getName();
         this.p = p;
+    }
+
+    public void update(ScannedRobotEvent bot, Position pos) {
+        this.bearing = bot.getBearing();
+        this.distance = bot.getDistance();
+        this.energy = bot.getEnergy();
+        this.heading = bot.getHeading();
+        this.velocity = bot.getVelocity();
+        this.name = bot.getName();
+        this.p = pos;
     }
 
     public double getBearing() {
