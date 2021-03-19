@@ -30,11 +30,6 @@ public class Saviour extends TeamRobot {
         }
         System.out.println("My team is " + teammates.toString());
 
-        // !!!!!!!!!!!!!!!!!!!!!!!!! TEMPORÁRIO !!!!!!!!!!!!!!!!!!!!!!!!!
-        for (int i = 0; i < 100000; i++) {
-            this.doNothing();
-        }
-
         this.setAdjustGunForRobotTurn(true);
         // Loop forever
         while (true) {
@@ -58,6 +53,8 @@ public class Saviour extends TeamRobot {
 
         if(!this.teammates.containsKey(e.getName())) {
 
+            // ---------------------------------------- Shoot ----------------------------------------
+
             double absoluteBearing = getHeading() + e.getBearing();
             double bearingFromGun = normalRelativeAngleDegrees(absoluteBearing - getGunHeading());
 
@@ -73,6 +70,7 @@ public class Saviour extends TeamRobot {
                 scan();
             }
 
+            // ---------------------------------------------------------------------------------------
         }
     }
 

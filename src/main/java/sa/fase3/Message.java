@@ -16,8 +16,7 @@ public class Message implements Serializable {
     public final static int INFO = 0;
     public final static int ATTACK = 1;
     public final static int REQUEST = 2;
-    public final static int HELP = 3;
-    public final static int COME_WITH_ME = 4;
+    public final static int COME_WITH_ME = 3;
 
     public Message() {
         this.sender = null;
@@ -30,6 +29,11 @@ public class Message implements Serializable {
 
     public Message(String sender, int type, Position p) {
         this.sender = sender;
+        this.type = type;
+        this.p = p;
+    }
+
+    public Message(int type, Position p) {
         this.type = type;
         this.p = p;
     }

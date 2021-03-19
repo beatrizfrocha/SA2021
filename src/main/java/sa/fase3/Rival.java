@@ -1,5 +1,7 @@
 package sa.fase3;
 
+import robocode.HitByBulletEvent;
+import robocode.HitRobotEvent;
 import robocode.ScannedRobotEvent;
 import sa.Position;
 
@@ -31,6 +33,26 @@ public class Rival implements java.io.Serializable{
         this.velocity = e.getVelocity();
         this.name = e.getName();
         this.p = p;
+    }
+
+    public Rival(HitRobotEvent e){
+        this.bearing = e.getBearing();
+        this.distance = 0;
+        this.energy = e.getEnergy();
+        this.heading = 0;
+        this.velocity = 0;
+        this.name = e.getName();
+        this.p = null;
+    }
+
+    public Rival(HitByBulletEvent e) {
+        this.bearing = e.getBearing();
+        this.distance = 0;
+        this.energy = 0;
+        this.heading = 0;
+        this.velocity = 0;
+        this.name = e.getName();
+        this.p = null;
     }
 
     public void update(ScannedRobotEvent bot, Position pos) {
