@@ -21,7 +21,7 @@ public class Boss extends TeamRobot {
     // Amigos
     private Map<String, Position> teammates = new HashMap<>();
     private boolean sicko_mode = true; // modo de ataque
-    private int gladiators_alive = 0;
+    private int gladiators_alive = 2;
 
     // Inimigos
     private Map<String, Rival> enemies = new HashMap<>();
