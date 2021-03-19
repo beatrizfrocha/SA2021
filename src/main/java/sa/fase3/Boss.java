@@ -26,6 +26,7 @@ public class Boss extends TeamRobot {
     // Inimigos
     private Map<String, Rival> enemies = new HashMap<>();
     private Rival current_rival;
+    private Rival avengerEnemy = null;
     private int enemiesToScan = 5;
     private int scannedEnemies = 0;
     private int aliveEnemies = 5;
@@ -96,6 +97,7 @@ public class Boss extends TeamRobot {
                     this.current_rival = selectTarget();
                     attackForMe(current_rival);
                 }
+
                 // Atualiza posição do rival atual
                 if (current_rival != null && e.getName().equals(current_rival.getName())) {
                     current_rival.update(e,p);
@@ -104,6 +106,11 @@ public class Boss extends TeamRobot {
                 else if(current_rival == null){
                     System.out.println("current rival = null");
                 }
+
+                // Remove inimigo do avenger
+                if (avengerEnemy != null && e.getName().equals(avengerEnemy.getName())) {
+                    avengerEnemy = null;
+                }
             }
         }
 
@@ -111,8 +118,10 @@ public class Boss extends TeamRobot {
 
     public void onHitByBullet(HitByBulletEvent e) {
 
-        if(!this.teammates.containsKey(e.getName())) {
-            avengeMe(new Rival(e));
+        if(this.avengerEnemy == null && !this.teammates.containsKey(e.getName())) {
+            Rival r = new Rival(e);
+            avengeMe(r);
+            this.avengerEnemy = r;
         }
 
         turnRight(normalRelativeAngleDegrees(90 - (getHeading() - e.getHeading())));
