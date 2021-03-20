@@ -21,6 +21,7 @@ public class Gladiator extends TeamRobot implements Droid {
     private boolean battlefield_mode = false;
     private boolean peek = false;
     private int direction = 1;
+    private double moveAmount;
     private int dist = 50; // distance to move when we're hit
     private Map<String, Position> teammates = new HashMap<>();
 
@@ -33,8 +34,21 @@ public class Gladiator extends TeamRobot implements Droid {
         for (int i = 0; i < 10; i++) {
             this.doNothing();
         }
+
         System.out.println("My team is " + teammates.toString());
         this.setAdjustGunForRobotTurn(true);
+
+        while(true){
+            // Tell the game that when we take move,
+            // we'll also want to turn right... a lot.
+            this.setTurnRight(10000);
+            // Limit our speed to 5
+            this.setMaxVelocity(5);
+            // Start moving (and turning)
+            this.ahead(10000);
+            // Repeat.
+        }
+
     }
 
     public void onMessageReceived(MessageEvent evnt) {
@@ -62,40 +76,30 @@ public class Gladiator extends TeamRobot implements Droid {
         double angle = Math.toDegrees(Math.atan2(posX, posY));
         double gun_angle = normalRelativeAngleDegrees(angle - this.getGunHeading());
 
-        // When the robot hits an obstacle, it changes its direction
-        if (this.getVelocity() == 0) {
-            this.direction *= -1;
-        }
-
-        this.setTurnRight(normalizeBearing(rival.getBearing() + 90 - (15 * this.direction)));
-
-        if (this.getTime() % 5 == 0) {
-            this.direction *= -1;
-            this.setAhead(4000 * this.direction);
-        }
-
         this.turnGunRight(gun_angle);
-
-        if (this.getGunHeat() == 0 && Math.abs(this.getGunTurnRemaining()) < 30) {
-            this.fire(MAX_BULLET_POWER);
-        }
+        this.fire(MAX_BULLET_POWER);
 
     }
 
     public void onHitRobot(HitRobotEvent evnt) {
-        if (this.teammates.containsKey(evnt.getName())) {
+        if (this.teammates.containsKey(evnt.getName()) && !battlefield_mode) {
             double bearing = evnt.getBearing();
-            turnRight(-bearing);
-        } else {
-            this.turnRight(evnt.getBearing());
-            this.fire(MAX_BULLET_POWER);
-            this.ahead(40);
+            this.turnRight(-bearing);
+            this.ahead(50);
+        } if(!this.teammates.containsKey(evnt.getName()) && !battlefield_mode) {
+            if (evnt.getBearing() > -10 && evnt.getBearing() < 10) {
+                fire(3);
+            }
         }
-    }
-
-    public void onHitWall(HitWallEvent e) {
-        double bearing = e.getBearing();
-        turnRight(-bearing);
+        else {
+            // If he's in front of us, set back up a bit.
+            if (evnt.getBearing() > -90 && evnt.getBearing() < 90) {
+                back(100);
+            } // else he's in back of us, so set ahead a bit.
+            else {
+                ahead(100);
+            }
+        }
     }
 
     public void onRobotDeath(RobotDeathEvent evnt) {
@@ -122,30 +126,35 @@ public class Gladiator extends TeamRobot implements Droid {
         }
     }
 
-    /**
-     * onHitByBullet:  Turn perpendicular to the bullet, and move a bit.
-     */
-    public void onHitByBullet(HitByBulletEvent e) {
-        turnRight(normalRelativeAngleDegrees(90 - (getHeading() - e.getHeading())));
-
-        ahead(dist);
-        dist *= -1;
-        scan();
-    }
-
     public void goAroundBattlefield() {
-        // Turn to a wall
-        this.turnLeft(this.getHeading() % 90);
-        // Battlefield's width
-        this.ahead(800);
-        this.peek = true;
-        this.turnLeft(90);
+        // Initialize moveAmount to the maximum possible for this battlefield.
+        moveAmount = Math.max(getBattleFieldWidth(), getBattleFieldHeight());
+        // Initialize peek to false
+        peek = false;
+
+        // turnLeft to face a wall.
+        // getHeading() % 90 means the remainder of
+        // getHeading() divided by 90.
+        turnLeft(getHeading() % 90);
+        ahead(moveAmount);
+        // Turn the gun to turn right 90 degrees.
+        peek = true;
+        turnGunRight(90);
+        turnRight(90);
+
         while (true) {
+            // Look before we turn when ahead() completes.
+            peek = true;
             if(this.getTime()%5==0){
                 this.direction*=-1;
             }
-            this.ahead(800);
-            this.turnLeft(90*this.direction);
+            // Move up the wall
+            ahead(moveAmount);
+            // Don't look now
+            peek = false;
+            // Turn to the next wall
+            turnRight(90*this.direction);
         }
     }
 }
+
