@@ -19,8 +19,8 @@ public class Boss extends TeamRobot {
     private Map<Integer, SimpleEntry<Position,Position>> quadrantes;
 
     // Amigos
-    private Map<String, Position> teammates = new HashMap<>();
-    private boolean sicko_mode = true; // modo de ataque
+    public Map<String, Position> teammates = new HashMap<>();
+    private boolean sicko_mode = false; // modo de ataque
     private int gladiators_alive = 2;
 
     // Inimigos
@@ -40,8 +40,6 @@ public class Boss extends TeamRobot {
             this.doNothing();
         }
         System.out.println("My team is " + teammates.toString());
-
-        this.quadrantes = initQuadrantes(getBattleFieldWidth(),getBattleFieldHeight());
 
         setBodyColor(new Color(200, 200, 0));
         setGunColor(new Color(200, 200, 0));
@@ -124,17 +122,12 @@ public class Boss extends TeamRobot {
             this.avengerEnemy = r;
         }
 
-        turnRight(normalRelativeAngleDegrees(90 - (getHeading() - e.getHeading())));
+        /*turnRight(normalRelativeAngleDegrees(90 - (getHeading() - e.getHeading())));
 
         ahead(dist);
         dist *= -1;
-        scan();
-
-        // Vai à procura de uma melhor posição nos quadrantes
-        //Position p = getBetterPosition();
-        //System.out.println("Moving to " + p.toString());
-        //move(p,this);
-        comeWithMe(new Position(this.getX(),this.getY()));
+        scan();*/
+        //comeWithMe(new Position(this.getX(),this.getY()));
     }
 
     public void onRobotDeath(RobotDeathEvent evnt) {
@@ -146,7 +139,7 @@ public class Boss extends TeamRobot {
             enemiesToScan--;
 
             // Quando o rival atual morre
-            if (evnt.getName().equals(current_rival.getName())) {
+            if (current_rival != null && evnt.getName().equals(current_rival.getName())) {
                 current_rival.reconfigure();
                 requestInfoFromDroids();
                 this.current_rival = selectTarget();
@@ -250,54 +243,5 @@ public class Boss extends TeamRobot {
         else
             System.out.println("Rival is null.");
         return res;
-    }
-
-    private Position getBetterPosition(){
-
-        int num_quadr1 = countEnemiesInQuadrant(1);
-        int num_quadr2 = countEnemiesInQuadrant(2);
-        int num_quadr3 = countEnemiesInQuadrant(3);
-        int num_quadr4 = countEnemiesInQuadrant(4);
-
-        System.out.println("1 = " + num_quadr1 + " inimigos");
-        System.out.println("2 = " + num_quadr2 + " inimigos");
-        System.out.println("3 = " + num_quadr3 + " inimigos");
-        System.out.println("4 = " + num_quadr4 + " inimigos");
-
-        int best_quadrant;
-
-        if(num_quadr1 <= Math.min(num_quadr2,Math.min(num_quadr3,num_quadr4)))
-            best_quadrant = 1;
-        else if(num_quadr2 <= Math.min(num_quadr3,num_quadr4))
-            best_quadrant = 2;
-        else if(num_quadr3 <= num_quadr4)
-            best_quadrant = 3;
-        else
-            best_quadrant = 4;
-
-        double x_min = quadrantes.get(best_quadrant).getKey().getX();
-        double y_min = quadrantes.get(best_quadrant).getKey().getY();
-        double x_max = quadrantes.get(best_quadrant).getValue().getX();
-        double y_max = quadrantes.get(best_quadrant).getValue().getY();
-
-        double rand_x = Math.random() * (x_max - x_min) + x_min;
-        double rand_y = Math.random() * (y_max - y_min) + y_min;
-
-        return new Position(rand_x,rand_y);
-    }
-
-    private int countEnemiesInQuadrant(int quadrant){
-
-        double x_min = quadrantes.get(quadrant).getKey().getX();
-        double y_min = quadrantes.get(quadrant).getKey().getY();
-        double x_max = quadrantes.get(quadrant).getValue().getX();
-        double y_max = quadrantes.get(quadrant).getValue().getY();
-
-        int count = 0;
-        for(Rival r: this.enemies.values()){
-            if(r.getX() < x_max && r.getY() < y_max && r.getX() > x_min && r.getY() > y_min)
-                count++;
-        }
-        return count;
     }
 }

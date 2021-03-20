@@ -86,6 +86,11 @@ public class Gladiator extends TeamRobot implements Droid {
         }
     }
 
+    public void onHitWall(HitWallEvent e) {
+        double bearing = e.getBearing();
+        turnRight(-bearing);
+    }
+
     public void onRobotDeath(RobotDeathEvent evnt) {
         String name = evnt.getName();
         System.out.println("My rival is = " + this.rival.getName());
@@ -125,5 +130,4 @@ public class Gladiator extends TeamRobot implements Droid {
             this.turnLeft(90*this.direction);
         }
     }
-
 }

@@ -123,7 +123,7 @@ public class Avenger extends TeamRobot {
     public void onRobotDeath(RobotDeathEvent e){
         // if prey who is being annihilated is killed, be available to annihilate (receive new order of avenging)
         // or scan new prey.
-        if(e.getName().equals(trackName.getName()) && is_killing){
+        if(trackName != null && e.getName().equals(trackName.getName()) && is_killing){
             is_killing = false;
             trackName = null;
             scan();
@@ -134,7 +134,7 @@ public class Avenger extends TeamRobot {
     public void onHitRobot(HitRobotEvent e) {
 
         // Set colliding robot as the prey, unless avenging or already hunting him.
-        if(!is_killing && trackName.getName().equals(e.getName())){
+        if(!is_killing && trackName != null && trackName.getName().equals(e.getName())){
             trackName = new Rival(e);
 
             gunTurnAmt = normalRelativeAngleDegrees(e.getBearing() + (getHeading() - getRadarHeading()));
