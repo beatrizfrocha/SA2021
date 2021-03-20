@@ -78,7 +78,8 @@ public class Gladiator extends TeamRobot implements Droid {
 
     public void onHitRobot(HitRobotEvent evnt) {
         if (this.teammates.containsKey(evnt.getName())) {
-            this.ahead(100);
+            double bearing = evnt.getBearing();
+            turnRight(-bearing);
         } else {
             this.turnRight(evnt.getBearing());
             this.fire(MAX_BULLET_POWER);

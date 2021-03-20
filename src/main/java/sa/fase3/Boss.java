@@ -20,13 +20,12 @@ public class Boss extends TeamRobot {
 
     // Amigos
     public Map<String, Position> teammates = new HashMap<>();
-    private boolean sicko_mode = false; // modo de ataque
-    private int gladiators_alive = 2;
+    public boolean sicko_mode = false; // modo de ataque
+    public int gladiators_alive = 2;
 
     // Inimigos
     private Map<String, Rival> enemies = new HashMap<>();
     private Rival current_rival;
-    private Rival avengerEnemy = null;
     private int enemiesToScan = 5;
     private int scannedEnemies = 0;
     private int aliveEnemies = 5;
@@ -45,6 +44,8 @@ public class Boss extends TeamRobot {
         setGunColor(new Color(200, 200, 0));
         setRadarColor(new Color(200, 200, 0));
         this.setAdjustGunForRobotTurn(true);
+
+        comeWithMe(new Position(this.getX(),this.getY()));
 
         while (true) {
             turnGunRight(10); // Scans automatically
@@ -101,14 +102,6 @@ public class Boss extends TeamRobot {
                     current_rival.update(e,p);
                     attackForMe(current_rival);
                 }
-                else if(current_rival == null){
-                    System.out.println("current rival = null");
-                }
-
-                // Remove inimigo do avenger
-                if (avengerEnemy != null && e.getName().equals(avengerEnemy.getName())) {
-                    avengerEnemy = null;
-                }
             }
         }
 
@@ -116,18 +109,17 @@ public class Boss extends TeamRobot {
 
     public void onHitByBullet(HitByBulletEvent e) {
 
-        if(this.avengerEnemy == null && !this.teammates.containsKey(e.getName())) {
+        if(!this.teammates.containsKey(e.getName())) {
             Rival r = new Rival(e);
             avengeMe(r);
-            this.avengerEnemy = r;
         }
 
         /*turnRight(normalRelativeAngleDegrees(90 - (getHeading() - e.getHeading())));
-
         ahead(dist);
         dist *= -1;
         scan();*/
-        //comeWithMe(new Position(this.getX(),this.getY()));
+
+        comeWithMe(new Position(this.getX(),this.getY()));
     }
 
     public void onRobotDeath(RobotDeathEvent evnt) {
@@ -145,7 +137,6 @@ public class Boss extends TeamRobot {
                 this.current_rival = selectTarget();
                 enemiesToScan = --aliveEnemies;
                 scannedEnemies = 0;
-
             }
         }
         // Morreu amigo
@@ -225,13 +216,10 @@ public class Boss extends TeamRobot {
         for (Rival enemy : enemies.values()) {
             for (Map.Entry<String,Position> pair: teammates.entrySet()){
                 if(pair.getKey().contains("Gladiator")) {
-                    System.out.println("entrei num glad");
                     double distance = euclideanDistance(enemy.getX(), enemy.getY(), pair.getValue().getX(), pair.getValue().getY());
                     totalDistance += distance;
                 }
             }
-            System.out.println("totalDistance = " + totalDistance);
-            System.out.println("minTotalDistance = " + minTotalDistance);
             if (totalDistance < minTotalDistance) {
                 minTotalDistance = totalDistance;
                 res = enemy;
@@ -239,7 +227,7 @@ public class Boss extends TeamRobot {
         }
 
         if(res != null)
-            System.out.println("Our current rival is: " + res.toString());
+            System.out.println("Our current rival is: " + res.getName());
         else
             System.out.println("Rival is null.");
         return res;

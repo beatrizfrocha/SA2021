@@ -6,8 +6,7 @@ import sa.Position;
 import java.awt.*;
 
 import static robocode.util.Utils.normalRelativeAngleDegrees;
-import static sa.Utils.informPosition;
-import static sa.Utils.move;
+import static sa.Utils.*;
 
 public class Saviour extends Boss {
 
@@ -37,7 +36,8 @@ public class Saviour extends Boss {
         Message msg = (Message) evnt.getMessage();
         switch (msg.getType()) {
             case Message.COME_WITH_ME:
-                move(new Position(msg.getX(),msg.getY()),this);
+                if(euclideanDistance(msg.getX(),msg.getY(),this.getX(),this.getY()) > 50)
+                    move(new Position(msg.getX(),msg.getY()),this);
                 break;
             case Message.INFO:
                 teammates.put(msg.getSender(), msg.getPosition());
@@ -50,7 +50,7 @@ public class Saviour extends Boss {
         if(amILeader)
             super.onScannedRobot(e);
         else {
-            if(!this.teammates.containsKey(e.getName())) {
+            if(!teammates.containsKey(e.getName())) {
 
                 // ---------------------------------------- Shoot ----------------------------------------
 
@@ -81,6 +81,18 @@ public class Saviour extends Boss {
             if (e.getName().contains("Boss")) {
                 amILeader = true;
             }
+            System.out.println("Robot: " + e.getName() + " caputou.");
+
+            if (e.getName().contains("Gladiator")) {
+                gladiators_alive--;
+                System.out.println("gladiators_alive = " + gladiators_alive);
+                if (amILeader && gladiators_alive == 0) {
+                    sicko_mode = true;
+                    System.out.println("Young LaFlame, he in sicko mode");
+                }
+            }
+            teammates.remove(e.getName());
+            System.out.println("current team after is " + teammates.toString());
         }
     }
 
@@ -88,12 +100,6 @@ public class Saviour extends Boss {
 
         if(amILeader) {
             super.onHitByBullet(e);
-        }
-        else {
-            turnRight(normalRelativeAngleDegrees(90 - (getHeading() - e.getHeading())));
-            ahead(dist);
-            dist *= -1;
-            scan();
         }
     }
 }
