@@ -114,10 +114,10 @@ public class Boss extends TeamRobot {
             avengeMe(r);
         }
 
-        /*turnRight(normalRelativeAngleDegrees(90 - (getHeading() - e.getHeading())));
+        turnRight(normalRelativeAngleDegrees(90 - (getHeading() - e.getHeading())));
         ahead(dist);
         dist *= -1;
-        scan();*/
+        scan();
 
         comeWithMe(new Position(this.getX(),this.getY()));
     }
