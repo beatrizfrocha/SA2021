@@ -20,6 +20,7 @@ public class Gladiator extends TeamRobot implements Droid {
     private boolean battlefield_mode = false;
     private boolean peek = false;
     private int direction = 1;
+    private int dist = 50; // distance to move when we're hit
     private Map<String, Position> teammates = new HashMap<>();
 
     public void run() {
@@ -114,6 +115,17 @@ public class Gladiator extends TeamRobot implements Droid {
                 this.goAroundBattlefield();
             }
         }
+    }
+
+    /**
+     * onHitByBullet:  Turn perpendicular to the bullet, and move a bit.
+     */
+    public void onHitByBullet(HitByBulletEvent e) {
+        turnRight(normalRelativeAngleDegrees(90 - (getHeading() - e.getHeading())));
+
+        ahead(dist);
+        dist *= -1;
+        scan();
     }
 
     public void goAroundBattlefield() {
