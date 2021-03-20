@@ -3,6 +3,7 @@ package sa.fase3;
 import robocode.*;
 import sa.Position;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +25,10 @@ public class Gladiator extends TeamRobot implements Droid {
     private Map<String, Position> teammates = new HashMap<>();
 
     public void run() {
+        setBodyColor(new Color(65, 252, 3));
+        setGunColor(new Color(65, 252, 3));
+        setRadarColor(new Color(65, 252, 3));
+
         informPosition(this);
         for (int i = 0; i < 10; i++) {
             this.doNothing();
