@@ -46,7 +46,7 @@ public class Utils {
         return new Position(enemyX,enemyY);
     }
 
-    public static void move(Position p, TeamRobot robot) {
+    public static void move(Position p, TeamRobot robot, int dist) {
         double xi = robot.getX();
         double yi = robot.getY();
         double xf = p.getX();
@@ -66,7 +66,7 @@ public class Utils {
             angle = 90 - (90-angle);
 
         robot.turnLeft(normalRelativeAngleDegrees(angle + robot.getHeading()));
-        robot.ahead(distance);
+        robot.ahead(distance-dist);
     }
 
     public static void informPosition(TeamRobot t) {

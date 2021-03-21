@@ -37,7 +37,7 @@ public class Saviour extends Boss {
         switch (msg.getType()) {
             case Message.COME_WITH_ME:
                 if(euclideanDistance(msg.getX(),msg.getY(),this.getX(),this.getY()) > 50)
-                    move(new Position(msg.getX(),msg.getY()),this);
+                    move(new Position(msg.getX(),msg.getY()),this,50);
                 break;
             case Message.INFO:
                 teammates.put(msg.getSender(), msg.getPosition());
@@ -102,5 +102,21 @@ public class Saviour extends Boss {
             super.onHitByBullet(e);
         }
     }
-}
+
+    public void onHitRobot(HitRobotEvent e) {
+
+        if (e.getBearing() > -90 && e.getBearing() <= 90) {
+            back(20);
+        } else {
+            ahead(20);
+        }
+        if (e.isMyFault()) {
+            turnRight(10);
+        }
+    }
+
+
+
+
+    }
 
