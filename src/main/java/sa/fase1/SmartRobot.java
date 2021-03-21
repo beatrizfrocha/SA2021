@@ -46,8 +46,6 @@ public class SmartRobot extends AdvancedRobot {
         System.out.println("Distance travelled -> " + String.format("%.2f", this.myOdometer.stop_race()));
     }
 
-
-
     public void move(double xf, double yf) {
         double xi = this.getX();
         double yi = this.getY();
