@@ -46,29 +46,6 @@ public class Utils {
         return new Position(enemyX,enemyY);
     }
 
-    public static void move(Position p, TeamRobot robot, int dist) {
-        double xi = robot.getX();
-        double yi = robot.getY();
-        double xf = p.getX();
-        double yf = p.getY();
-        double distance = euclideanDistance(xi, yi, xf, yf);
-
-        double angle = angleBetween(xi, yi, xf, yf);
-
-        // Angle that the robot has to turn to be aligned with the desired position
-        if(xi > xf && yi > yf)
-            angle = 90 + (90-angle);
-        if(xi < xf && yi < yf)
-            angle = 270 + (90-angle);
-        if(xi < xf && yi > yf)
-            angle = 270 - (90-angle);
-        if(xi > xf && yi < yf)
-            angle = 90 - (90-angle);
-
-        robot.turnLeft(normalRelativeAngleDegrees(angle + robot.getHeading()));
-        robot.ahead(distance-dist);
-    }
-
     public static void informPosition(TeamRobot t) {
         Message msg = new Message(t.getName(), Message.INFO, new Position(t.getX(), t.getY()));
         try {

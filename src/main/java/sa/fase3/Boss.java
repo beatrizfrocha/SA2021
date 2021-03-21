@@ -109,11 +109,10 @@ public class Boss extends TeamRobot {
 
     public void onHitByBullet(HitByBulletEvent e) {
 
-        if(!this.teammates.containsKey(e.getName())) {
+        if(this.enemies.containsKey(e.getName())) {
             Rival r = new Rival(e);
             avengeMe(r);
         }
-
         turnRight(normalRelativeAngleDegrees(90 - (getHeading() - e.getHeading())));
         ahead(dist);
         dist *= -1;

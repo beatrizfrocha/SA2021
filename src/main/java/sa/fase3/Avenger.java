@@ -48,7 +48,7 @@ public class Avenger extends TeamRobot {
         }
     }
 
-    // Avenger's behaviour function for chasing his target.
+    // Avenger's behaviour function for chasing his prey.
     public void hunting()
     {
         // turn the Gun (looks for enemy).
@@ -90,22 +90,22 @@ public class Avenger extends TeamRobot {
             // This is our target, start counting from 0 to prepare the hunt.
             count = 0;
             // If our target is too far away, turn and move toward it.
-            if (e.getDistance() > 130) {
+            if (e.getDistance() > 150) {
                 gunTurnAmt = normalRelativeAngleDegrees(e.getBearing() + (getHeading() - getRadarHeading()));
 
                 turnGunRight(gunTurnAmt);
                 turnRight(e.getBearing());
-                ahead(e.getDistance() - 120);
+                ahead(e.getDistance() - 140);
                 return;
             }
 
             // If our target is close.
             gunTurnAmt = normalRelativeAngleDegrees(e.getBearing() + (getHeading() - getRadarHeading()));
             turnGunRight(gunTurnAmt);
-            fire(10);
+            fire(3);
 
             // If our target is too close, back up.
-            if (e.getDistance() < 80) {
+            if (e.getDistance() < 100) {
                 if (e.getBearing() > -90 && e.getBearing() <= 90) {
                     back(40);
                 } else {
@@ -122,10 +122,11 @@ public class Avenger extends TeamRobot {
     // What to do when a robot dies.
     public void onRobotDeath(RobotDeathEvent e){
         // if prey who is being annihilated is killed, be available to annihilate (receive new order of avenging)
-        // or scan new prey.
+        // or scan new prey itself.
         if(trackName != null && e.getName().equals(trackName.getName()) && is_killing){
             is_killing = false;
             trackName = null;
+
             scan();
         }
     }
@@ -133,7 +134,7 @@ public class Avenger extends TeamRobot {
     // What to do when hit by robot.
     public void onHitRobot(HitRobotEvent e) {
 
-        // Set colliding robot as the prey, unless avenging or already hunting him.
+        // Set colliding robot as the new prey, unless avenging or already hunting him.
         if(!is_killing && trackName != null && trackName.getName().equals(e.getName())){
             trackName = new Rival(e);
 
@@ -141,17 +142,17 @@ public class Avenger extends TeamRobot {
             turnGunRight(gunTurnAmt);
             fire(10);
         }
-        back(50);
-    }
 
-    // What to do when hit by a bullet.
-    public void onHitByBullet(HitByBulletEvent e) {
-        // When hit moves perpendicular to the bullet's direction.
-        turnRight(normalRelativeAngleDegrees(90 - (getHeading() - e.getHeading())));
+        double bearing = e.getBearing();
+        turnRight(-bearing);
+        ahead(50);
 
-        ahead(dist);
-        dist *= -1;
         scan();
+    }
+    // What to do when it hits a wall.
+    public void onHitWall(HitWallEvent e) {
+        double bearing = e.getBearing();
+        turnRight(-bearing);
     }
 
     // What to do when it receives a messages.

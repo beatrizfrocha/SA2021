@@ -37,7 +37,7 @@ public class Saviour extends Boss {
         switch (msg.getType()) {
             case Message.COME_WITH_ME:
                 if(euclideanDistance(msg.getX(),msg.getY(),this.getX(),this.getY()) > 50)
-                    move(new Position(msg.getX(),msg.getY()),this,50);
+                    this.move(new Position(msg.getX(),msg.getY()),50);
                 break;
             case Message.INFO:
                 teammates.put(msg.getSender(), msg.getPosition());
@@ -115,8 +115,27 @@ public class Saviour extends Boss {
         }
     }
 
+    public void move(Position p, int dist) {
+        double xi = this.getX();
+        double yi = this.getY();
+        double xf = p.getX();
+        double yf = p.getY();
+        double distance = euclideanDistance(xi, yi, xf, yf);
 
+        double angle = angleBetween(xi, yi, xf, yf);
 
+        // Angle that the robot has to turn to be aligned with the desired position
+        if(xi > xf && yi > yf)
+            angle = 90 + (90-angle);
+        if(xi < xf && yi < yf)
+            angle = 270 + (90-angle);
+        if(xi < xf && yi > yf)
+            angle = 270 - (90-angle);
+        if(xi > xf && yi < yf)
+            angle = 90 - (90-angle);
 
+        this.turnLeft(normalRelativeAngleDegrees(angle + this.getHeading()));
+        this.ahead(distance-dist);
     }
+}
 
