@@ -14,12 +14,12 @@ public class Boss extends TeamRobot {
 
     private int dist = 50;
 
-    // Amigos
+    // Friends
     public Map<String, Position> teammates = new HashMap<>();
     public boolean sicko_mode = false; // modo de ataque
     public int gladiators_alive = 2;
 
-    // Inimigos
+    // Enemies
     private Map<String, Rival> enemies = new HashMap<>();
     private Rival current_rival;
     private int enemiesToScan = 5;
