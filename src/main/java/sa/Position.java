@@ -10,11 +10,11 @@ public class Position implements java.io.Serializable {
     }
 
     public double getX() {
-        return x;
+        return this.x;
     }
 
     public double getY() {
-        return y;
+        return this.y;
     }
 
     public void setX(double x) {
@@ -30,10 +30,10 @@ public class Position implements java.io.Serializable {
 
         Position p = (Position) obj;
 
-        return (int)p.getX() == (int)x && (int)p.getY() == (int)y;
+        return (int)p.getX() == (int)this.x && (int)p.getY() == (int)this.y;
     }
 
     public String toString() {
-        return "(" + (int) x + ", " + (int) y + ")";
+        return "(" + (int) this.x + ", " + (int) this.y + ")";
     }
 }

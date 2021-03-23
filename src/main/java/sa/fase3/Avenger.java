@@ -1,6 +1,5 @@
 package sa.fase3;
 
-
 import robocode.*;
 import sa.Position;
 
@@ -12,21 +11,21 @@ import java.util.*;
 
 public class Avenger extends TeamRobot {
 
-    int count = 0; // Keeps track of how long we've been searching for our target (irrelevant if avenging).
-    double gunTurnAmt; // How much to turn our gun when searching.
-    Rival trackName; // Name of the robot we're currently hunting/annihilating.
-    boolean is_killing = false; // Flag that tells us if the Avenger is annihilating a robot.
-    int dist = 50; // Distance to move when hit by bullet.
+    private int count = 0; // Keeps track of how long we've been searching for our target (irrelevant if avenging).
+    private double gunTurnAmt; // How much to turn our gun when searching.
+    private Rival trackName; // Name of the robot we're currently hunting/annihilating.
+    private boolean is_killing = false; // Flag that tells us if the Avenger is annihilating a robot.
+    private int dist = 50; // Distance to move when hit by bullet.
     private Map<String, Position> teammates = new HashMap<>(); // Name of teammates and respective positions.
 
     public void run() {
 
         // Set colors of Avenger class robot.
-        setBodyColor(new Color(0, 0, 0));
-        setGunColor(new Color(210, 0, 0));
-        setRadarColor(new Color(255, 255, 255));
-        setScanColor(Color.black);
-        setBulletColor(Color.red);
+        this.setBodyColor(new Color(0, 0, 0));
+        this.setGunColor(new Color(210, 0, 0));
+        this.setRadarColor(new Color(255, 255, 255));
+        this.setScanColor(Color.black);
+        this.setBulletColor(Color.red);
 
         // Inform teammates of Avenger's name and position.
         informPosition(this);
@@ -34,17 +33,17 @@ public class Avenger extends TeamRobot {
             this.doNothing();
         }
 
-        System.out.println("My teammates are: " + teammates.toString());
+        System.out.println("My teammates are: " + this.teammates.toString());
 
-        trackName = null; // Initialize to not tracking anyone.
-        setAdjustGunForRobotTurn(true); // Make gun and radar turn independent from Avenger turning.
-        gunTurnAmt = 20; // Initialize gunTurn to 20.
+        this.trackName = null; // Initialize to not tracking anyone.
+        this.setAdjustGunForRobotTurn(true); // Make gun and radar turn independent from Avenger turning.
+        this.gunTurnAmt = 20; // Initialize gunTurn to 20.
 
         System.out.println("Avenger name is " + this.getName());
 
         // Hunt for given enemy.
         while (true) {
-            hunting();
+            this.hunting();
         }
     }
 
@@ -52,22 +51,22 @@ public class Avenger extends TeamRobot {
     public void hunting()
     {
         // turn the Gun (looks for enemy).
-        turnGunRight(gunTurnAmt);
+        this.turnGunRight(this.gunTurnAmt);
         // Keep track of how long we've been looking.
-        count++;
+        this.count++;
         // If we've haven't seen our target for 2 turns, look left.
-        if (count > 2) {
-            gunTurnAmt = -20;
+        if (this.count > 2) {
+            this.gunTurnAmt = -20;
         }
         // If we still haven't seen our target for 5 turns, look right.
-        if (count > 5) {
-            gunTurnAmt = 20;
+        if (this.count > 5) {
+            this.gunTurnAmt = 20;
         }
         // If we *still* haven't seen our target after 10 turns, find another target unless given order to avenge.
-        if (count > 11) {
+        if (this.count > 11) {
             // If it is avenging it keeps searching instead of choosing another target.
-            if(!is_killing)
-                trackName = null;
+            if(!this.is_killing)
+                this.trackName = null;
         }
     }
     
@@ -78,43 +77,43 @@ public class Avenger extends TeamRobot {
 
             // If we have a target, and this isn't it, return immediately
             // so we can get more ScannedRobotEvents.
-            if ((trackName != null && !e.getName().equals(trackName.getName()))) {
+            if ((this.trackName != null && !e.getName().equals(this.trackName.getName()))) {
                 return;
             }
 
             // If we don't have a prey, this robot becomes it.
-            if (trackName == null) {
-                trackName = new Rival(e, findPosition(this,e));
-                out.println("Hunting " + trackName.getName());
+            if (this.trackName == null) {
+                this.trackName = new Rival(e, findPosition(this,e));
+                System.out.println("Hunting " + this.trackName.getName());
             }
             // This is our target, start counting from 0 to prepare the hunt.
-            count = 0;
+            this.count = 0;
             // If our target is too far away, turn and move toward it.
             if (e.getDistance() > 150) {
-                gunTurnAmt = normalRelativeAngleDegrees(e.getBearing() + (getHeading() - getRadarHeading()));
+                this.gunTurnAmt = normalRelativeAngleDegrees(e.getBearing() + (this.getHeading() - this.getRadarHeading()));
 
-                turnGunRight(gunTurnAmt);
-                turnRight(e.getBearing());
-                ahead(e.getDistance() - 140);
+                this.turnGunRight(this.gunTurnAmt);
+                this.turnRight(e.getBearing());
+                this.ahead(e.getDistance() - 140);
                 return;
             }
 
             // If our target is close.
-            gunTurnAmt = normalRelativeAngleDegrees(e.getBearing() + (getHeading() - getRadarHeading()));
-            turnGunRight(gunTurnAmt);
-            fire(3);
+            this.gunTurnAmt = normalRelativeAngleDegrees(e.getBearing() + (this.getHeading() - this.getRadarHeading()));
+            this.turnGunRight(this.gunTurnAmt);
+            this.fire(3);
 
             // If our target is too close, back up.
             if (e.getDistance() < 100) {
                 if (e.getBearing() > -90 && e.getBearing() <= 90) {
-                    back(40);
+                    this.back(40);
                 } else {
-                    ahead(40);
+                    this.ahead(40);
                 }
             }
 
             // Run method onScannedRobot from the start.
-            scan();
+            this.scan();
         }
 
     }
@@ -123,11 +122,11 @@ public class Avenger extends TeamRobot {
     public void onRobotDeath(RobotDeathEvent e){
         // if prey who is being annihilated is killed, be available to annihilate (receive new order of avenging)
         // or scan new prey itself.
-        if(trackName != null && e.getName().equals(trackName.getName()) && is_killing){
-            is_killing = false;
-            trackName = null;
+        if(this.trackName != null && e.getName().equals(this.trackName.getName()) && this.is_killing){
+            this.is_killing = false;
+            this.trackName = null;
 
-            scan();
+            this.scan();
         }
     }
 
@@ -135,27 +134,27 @@ public class Avenger extends TeamRobot {
     public void onHitRobot(HitRobotEvent e) {
 
         // Set colliding robot as the new prey, unless avenging or already hunting him.
-        if(!is_killing && trackName != null && trackName.getName().equals(e.getName())){
-            trackName = new Rival(e);
+        if(!this.is_killing && this.trackName != null && this.trackName.getName().equals(e.getName())){
+            this.trackName = new Rival(e);
 
-            gunTurnAmt = normalRelativeAngleDegrees(e.getBearing() + (getHeading() - getRadarHeading()));
-            turnGunRight(gunTurnAmt);
-            fire(10);
+            this.gunTurnAmt = normalRelativeAngleDegrees(e.getBearing() + (this.getHeading() - this.getRadarHeading()));
+            this.turnGunRight(this.gunTurnAmt);
+            this.fire(10);
         }
 
         double bearing = e.getBearing();
-        turnRight(-bearing);
-        ahead(50);
+        this.turnRight(-bearing);
+        this.ahead(50);
 
-        scan();
+        this.scan();
     }
     // What to do when it hits a wall.
     public void onHitWall(HitWallEvent e) {
         double bearing = e.getBearing();
-        turnRight(-bearing);
+        this.turnRight(-bearing);
     }
 
-    // What to do when it receives a messages.
+    // What to do when it receives a message.
     public void onMessageReceived(MessageEvent e) {
 
         Message message = (Message) e.getMessage();
@@ -163,18 +162,18 @@ public class Avenger extends TeamRobot {
         switch (message.getType()) {
             // If it receives an order of avenging from Boss.
             case Message.ATTACK:
-                // Only accepts order if its not avenging.
-                if(!is_killing){
+                // Only accepts order if it's not avenging.
+                if(!this.is_killing){
                     this.trackName = message.getRival();
                     System.out.println("Annihilation order for robot: " + this.trackName.getName() + ".");
-                    is_killing = true;
+                    this.is_killing = true;
                 }
-                else System.out.println("Unnable to accept order, already avenging.");
+                else System.out.println("Unable to accept order, already avenging.");
                 break;
             // If it receives names and positions of teammates.
             case Message.INFO:
                 if(message.getType() == Message.INFO){
-                    teammates.put(message.getSender(), message.getPosition());
+                    this.teammates.put(message.getSender(), message.getPosition());
                 }
                 break;
         }

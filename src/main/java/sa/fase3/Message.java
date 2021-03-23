@@ -68,15 +68,15 @@ public class Message implements Serializable {
     }
 
     public double getX() {
-        return p.getX();
+        return this.p.getX();
     }
 
     public double getY() {
-        return p.getY();
+        return this.p.getY();
     }
 
     public Position getPosition() {
-        return p;
+        return this.p;
     }
 
     public void setSender(String sender) {
@@ -96,11 +96,11 @@ public class Message implements Serializable {
     }
 
     public void setX(double x) {
-        p.setX(x);
+        this.p.setX(x);
     }
 
     public void setY(double y) {
-        p.setY(y);
+        this.p.setY(y);
     }
 
 }

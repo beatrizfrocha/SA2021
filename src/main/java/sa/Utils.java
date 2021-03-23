@@ -5,7 +5,6 @@ import robocode.TeamRobot;
 import sa.fase3.Message;
 
 import java.io.IOException;
-import static robocode.util.Utils.normalRelativeAngleDegrees;
 
 public class Utils {
 

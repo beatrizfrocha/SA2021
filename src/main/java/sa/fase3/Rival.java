@@ -89,9 +89,9 @@ public class Rival implements java.io.Serializable{
         return this.name;
     }
 
-    public double getX() { return p.getX(); }
+    public double getX() { return this.p.getX(); }
 
-    public double getY() { return p.getY(); }
+    public double getY() { return this.p.getY(); }
 
     public void reconfigure() {
         this.bearing = 0;
@@ -106,13 +106,13 @@ public class Rival implements java.io.Serializable{
     @Override
     public String toString() {
         return "Rival{" +
-                "bearing=" + bearing +
-                ", distance=" + distance +
-                ", energy=" + energy +
-                ", heading=" + heading +
-                ", velocity=" + velocity +
-                ", name='" + name + '\'' +
-                ", p=" + p.toString() +
+                "bearing=" + this.bearing +
+                ", distance=" + this.distance +
+                ", energy=" + this.energy +
+                ", heading=" + this.heading +
+                ", velocity=" + this.velocity +
+                ", name='" + this.name + '\'' +
+                ", p=" + this.p.toString() +
                 '}';
     }
 }

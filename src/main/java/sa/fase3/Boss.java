@@ -6,7 +6,6 @@ import sa.Position;
 import java.awt.*;
 import java.io.IOException;
 import java.util.*;
-import java.util.AbstractMap.SimpleEntry;
 
 import static robocode.util.Utils.normalRelativeAngleDegrees;
 import static sa.Utils.*;
@@ -14,9 +13,6 @@ import static sa.Utils.*;
 public class Boss extends TeamRobot {
 
     private int dist = 50;
-
-    // Quadrantes
-    private Map<Integer, SimpleEntry<Position,Position>> quadrantes;
 
     // Amigos
     public Map<String, Position> teammates = new HashMap<>();
@@ -38,17 +34,17 @@ public class Boss extends TeamRobot {
         for (int i = 0; i < 10; i++) {
             this.doNothing();
         }
-        System.out.println("My team is " + teammates.toString());
+        System.out.println("My team is " + this.teammates.toString());
 
-        setBodyColor(new Color(200, 200, 0));
-        setGunColor(new Color(200, 200, 0));
-        setRadarColor(new Color(200, 200, 0));
+        this.setBodyColor(new Color(200, 200, 0));
+        this.setGunColor(new Color(200, 200, 0));
+        this.setRadarColor(new Color(200, 200, 0));
         this.setAdjustGunForRobotTurn(true);
 
-        comeWithMe(new Position(this.getX(),this.getY()));
+        this.comeWithMe(new Position(this.getX(),this.getY()));
 
         while (true) {
-            turnGunRight(10); // Scans automatically
+            this.turnGunRight(10); // Scans automatically
         }
     }
 
@@ -58,49 +54,49 @@ public class Boss extends TeamRobot {
         Message message = (Message) event.getMessage();
 
         if(message.getType() == Message.INFO){
-            teammates.put(message.getSender(), message.getPosition());
+            this.teammates.put(message.getSender(), message.getPosition());
         }
     }
 
     public void onScannedRobot(ScannedRobotEvent e) {
 
-        // Ataca inimigo
-        if(sicko_mode && !this.teammates.containsKey(e.getName())){
+        // Attacks enemy
+        if(this.sicko_mode && !this.teammates.containsKey(e.getName())){
 
             // ---------------------------------------- Shoot ----------------------------------------
-            double absoluteBearing = getHeading() + e.getBearing();
-            double bearingFromGun = normalRelativeAngleDegrees(absoluteBearing - getGunHeading());
+            double absoluteBearing = this.getHeading() + e.getBearing();
+            double bearingFromGun = normalRelativeAngleDegrees(absoluteBearing - this.getGunHeading());
 
             if (Math.abs(bearingFromGun) <= 3) {
-                turnGunRight(bearingFromGun);
-                if (getGunHeat() == 0) {
-                    fire(Math.min(3 - Math.abs(bearingFromGun), getEnergy() - .1));
+                this.turnGunRight(bearingFromGun);
+                if (this.getGunHeat() == 0) {
+                    this.fire(Math.min(3 - Math.abs(bearingFromGun), this.getEnergy() - .1));
                 }
             } else {
-                turnGunRight(bearingFromGun);
+                this.turnGunRight(bearingFromGun);
             }
             if (bearingFromGun == 0) {
-                scan();
+                this.scan();
             }
         }
         else{
             Position p = findPosition(this,e);
-            // Encontra inimigo
+            // Finds enemy
             if (!this.teammates.containsKey(e.getName())) {
 
-                scannedEnemies++;
+                this.scannedEnemies++;
                 Rival enemy = new Rival(e,p);
-                enemies.put(e.getName(), enemy);
+                this.enemies.put(e.getName(), enemy);
 
-                if(scannedEnemies == enemiesToScan){
-                    this.current_rival = selectTarget();
-                    attackForMe(current_rival);
+                if(this.scannedEnemies == this.enemiesToScan){
+                    this.current_rival = this.selectTarget();
+                    this.attackForMe(this.current_rival);
                 }
 
-                // Atualiza posição do rival atual
-                if (current_rival != null && e.getName().equals(current_rival.getName())) {
-                    current_rival.update(e,p);
-                    attackForMe(current_rival);
+                // Updates enemy's current position
+                if (this.current_rival != null && e.getName().equals(this.current_rival.getName())) {
+                    this.current_rival.update(e,p);
+                    this.attackForMe(this.current_rival);
                 }
             }
         }
@@ -111,40 +107,40 @@ public class Boss extends TeamRobot {
 
         if(this.enemies.containsKey(e.getName())) {
             Rival r = new Rival(e);
-            avengeMe(r);
+            this.avengeMe(r);
         }
-        turnRight(normalRelativeAngleDegrees(90 - (getHeading() - e.getHeading())));
-        ahead(dist);
-        dist *= -1;
-        scan();
+        this.turnRight(normalRelativeAngleDegrees(90 - (this.getHeading() - e.getHeading())));
+        this.ahead(this.dist);
+        this.dist *= -1;
+        this.scan();
 
-        comeWithMe(new Position(this.getX(),this.getY()));
+        this.comeWithMe(new Position(this.getX(),this.getY()));
     }
 
     public void onRobotDeath(RobotDeathEvent evnt) {
         String name = evnt.getName();
 
-        // Morreu inimigo
+        // Enemy is dead
         if(!this.teammates.containsKey(name)){
-            enemies.remove(name);
-            enemiesToScan--;
+            this.enemies.remove(name);
+            this.enemiesToScan--;
 
-            // Quando o rival atual morre
-            if (current_rival != null && evnt.getName().equals(current_rival.getName())) {
-                current_rival.reconfigure();
-                requestInfoFromDroids();
-                this.current_rival = selectTarget();
-                enemiesToScan = --aliveEnemies;
-                scannedEnemies = 0;
+            // When the current enemy dies
+            if (this.current_rival != null && evnt.getName().equals(this.current_rival.getName())) {
+                this.current_rival.reconfigure();
+                this.requestInfoFromDroids();
+                this.current_rival = this.selectTarget();
+                this.enemiesToScan = --this.aliveEnemies;
+                this.scannedEnemies = 0;
             }
         }
-        // Morreu amigo
+        // Friend is dead
         else {
             this.teammates.remove(evnt.getName());
             if (name.contains("Gladiator")) {
-                gladiators_alive--;
-                if (gladiators_alive == 0)
-                    sicko_mode = true;
+                this.gladiators_alive--;
+                if (this.gladiators_alive == 0)
+                    this.sicko_mode = true;
             }
         }
     }
@@ -154,9 +150,9 @@ public class Boss extends TeamRobot {
     public void attackForMe(Rival r){
         Message msg = new Message(Message.ATTACK,r);
         try {
-            for(Map.Entry<String,Position> mates: teammates.entrySet())
+            for(Map.Entry<String,Position> mates: this.teammates.entrySet())
                 if (mates.getKey().contains("Gladiator"))
-                    sendMessage(mates.getKey(), msg);
+                    this.sendMessage(mates.getKey(), msg);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -165,9 +161,9 @@ public class Boss extends TeamRobot {
     public void avengeMe(Rival r){
         Message msg = new Message(Message.ATTACK,r);
         try {
-            for(Map.Entry<String,Position> mates: teammates.entrySet())
+            for(Map.Entry<String,Position> mates: this.teammates.entrySet())
                 if (mates.getKey().contains("Avenger"))
-                    sendMessage(mates.getKey(), msg);
+                    this.sendMessage(mates.getKey(), msg);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -176,9 +172,9 @@ public class Boss extends TeamRobot {
     public void requestInfoFromDroids() {
         Message msg = new Message(Message.REQUEST);
         try {
-            for(Map.Entry<String,Position> mates: teammates.entrySet())
+            for(Map.Entry<String,Position> mates: this.teammates.entrySet())
                 if (mates.getKey().contains("Gladiator"))
-                    sendMessage(mates.getKey(), msg);
+                    this.sendMessage(mates.getKey(), msg);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -187,9 +183,9 @@ public class Boss extends TeamRobot {
     public void comeWithMe(Position p){
         Message msg = new Message(Message.COME_WITH_ME,p);
         try {
-            for(Map.Entry<String,Position> mates: teammates.entrySet())
+            for(Map.Entry<String,Position> mates: this.teammates.entrySet())
                 if (mates.getKey().contains("Saviour"))
-                    sendMessage(mates.getKey(), msg);
+                    this.sendMessage(mates.getKey(), msg);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -199,7 +195,7 @@ public class Boss extends TeamRobot {
         Message msg = new Message(Message.INFO);
 
         try{
-            broadcastMessage(msg);
+            this.broadcastMessage(msg);
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -211,9 +207,9 @@ public class Boss extends TeamRobot {
         double totalDistance = 0;
         double minTotalDistance = 10000;
         Rival res = null;
-        teammates.put(getName(), new Position(getX(), getY()));
-        for (Rival enemy : enemies.values()) {
-            for (Map.Entry<String,Position> pair: teammates.entrySet()){
+        this.teammates.put(getName(), new Position(getX(), getY()));
+        for (Rival enemy : this.enemies.values()) {
+            for (Map.Entry<String,Position> pair: this.teammates.entrySet()){
                 if(pair.getKey().contains("Gladiator")) {
                     double distance = euclideanDistance(enemy.getX(), enemy.getY(), pair.getValue().getX(), pair.getValue().getY());
                     totalDistance += distance;
