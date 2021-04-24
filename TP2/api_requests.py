@@ -21,8 +21,8 @@ db = client.test
 
 def get_data():
     base_url = "https://api.tomtom.com/traffic/services/5"
-    fields = "{incidents{type,geometry{type,coordinates},properties{iconCategory,magnitudeOfDelay,events{description,code,iconCategory},from,to,length,delay,roadNumbers,startTime,endTime}}}"
-    bbox= "-9.263105,38.591305,-9.035139,38.812612"
+    fields = "{incidents{type,geometry{type,coordinates},properties{id,iconCategory,magnitudeOfDelay,events{description,code,iconCategory},startTime,endTime,from,to,length,delay,roadNumbers,aci{probabilityOfOccurrence,numberOfReports,lastReportTime}}}}"    
+    bbox = "-9.263105,38.591305,-9.035139,38.812612"
     
     url = f"{base_url}/incidentDetails?language=en-GB&bbox={bbox}&fields={fields}&key={TOMTOM_API_KEY}"
 
