@@ -55,15 +55,23 @@ def save_data(response):
     log.info("Data inserted successfully")
 
 if __name__ == '__main__':
+    
+    init_ids()
+    
     while True:
-        init_ids()
-        data = get_data()
-        save_data(data)
+        try:
+            data = get_data()
+            save_data(data)
+        
+        except Exception as msg:
+            log.error(msg)
+        
         time.sleep(INTERVAL)
 
+# correr de x em x tempo durante y tempo (repetidos)
 # datas
 # cloud
 # endpoints
 # tratamento de dados
-# correr de x em x tempo durante y tempo (repetidos)
+
 # learning rate
