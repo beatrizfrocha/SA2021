@@ -70,11 +70,3 @@ if __name__ == '__main__':
             log.error(msg)
         
         time.sleep(INTERVAL)
-
-# correr de x em x tempo durante y tempo (repetidos)
-# datas
-# cloud
-# endpoints
-# tratamento de dados
-
-# learning rate
