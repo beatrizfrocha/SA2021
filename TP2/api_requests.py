@@ -14,7 +14,7 @@ log.setLevel(logging.DEBUG)
 
 TOMTOM_API_KEY = os.environ["TOMTOM_API_KEY"]
 MONGODB_URI = os.environ["MONGODB_URI"]
-INTERVAL = 5 # in seconds
+INTERVAL = 60 # in seconds
 ids = [] # incidents already inserted
 
 client = pymongo.MongoClient(MONGODB_URI)
@@ -47,15 +47,18 @@ def save_data(response):
     log.debug(f"Converting response to JSON")
     data = response.json()
 
+    inserted = 0
+
     for incident in data['incidents']:
         if incident['properties']['id'] not in ids:
             db.incidents.insert_one(incident)
             ids.append(incident['properties']['id'])
-
-    log.info("Data inserted successfully")
+            inserted += 1
+        
+    log.info(f"Inserted {inserted} new incidents successfully")
 
 if __name__ == '__main__':
-    
+
     init_ids()
     
     while True:
