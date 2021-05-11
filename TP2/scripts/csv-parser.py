@@ -1,6 +1,6 @@
 import csv
 
-with open('incidents.csv', 'r') as file:
+with open('data/incidents.csv', 'r') as file:
     reader = list(csv.reader(file))
     reader = reader[1:]
 
@@ -18,7 +18,7 @@ for i in reader:
 for i in datas:
     print(i)
 
-f = open("incidents_por_hora.csv", "w")
+f = open("data/incidents_per_hour.csv", "w")
 
 writer = csv.writer(f)
 writer.writerow(["Hora"])
