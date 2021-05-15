@@ -25,7 +25,7 @@ def convert_to_df():
     coordinates = []
     for incident in db.incidents.find({}):
         incident_part_1 = { key: incident[key] for key in ['_id', 'type'] }
-        incident_part_2 = { f'properties_{key}': incident['properties'][key] for key in ['id', 'iconCategory', 'magnitudeOfDelay', 'startTime', 'endTime', 'from', 'to', 'length', 'delay', 'aci']}
+        incident_part_2 = { f'properties_{key}': incident['properties'][key] for key in ['id', 'iconCategory', 'magnitudeOfDelay', 'startTime', 'endTime', 'from', 'to', 'length', 'delay']}
         incident_part_3 = { f'geometry_{key}': incident['geometry'][key] for key in ['type']}
         incident_part_1.update(incident_part_2)
         incident_part_1.update(incident_part_3)
@@ -49,4 +49,4 @@ if __name__ == '__main__':
     dataframes = convert_to_df()
 
     for key, value in dataframes.items():
-        value.to_csv(f'data/{key}.csv', index=False)
+        value.to_csv(f'../data/{key}.csv', index=False)
