@@ -49,4 +49,4 @@ if __name__ == '__main__':
     dataframes = convert_to_df()
 
     for key, value in dataframes.items():
-        value.to_csv(f'../data/{key}.csv', index=False)
+        value.to_csv(f'data/{key}.csv', index=False)
